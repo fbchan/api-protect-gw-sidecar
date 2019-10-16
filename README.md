@@ -1,1 +1,1 @@
-# api-protect-gw-sidecar
+# F5 API Protection, NGINX+ API GW and NGINX+ Sidecar
