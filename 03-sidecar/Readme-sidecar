@@ -1,0 +1,15 @@
+# To Compile NGINX+ images
+
+Step 1
+======
+cd to nginx-plus-ctrl-agent
+
+Step 2
+======
+Identify the following parameter before hand
+- CTRL_HOST ==> NGINX Controller FQDN
+- API_KEY ==> NGINX Controller API_KEY
+- Identify your private repository.
+
+Example
+docker build --no-cache --build-arg API_KEY=540286ae9ad5752ae7d7ca2d8ac527f8 --build-arg CTRL_HOST=nginx-ctrl.foobz.com.au  -t reg.foobz.com.au/foobz/nginx-plus-ctrl-agent:slim
