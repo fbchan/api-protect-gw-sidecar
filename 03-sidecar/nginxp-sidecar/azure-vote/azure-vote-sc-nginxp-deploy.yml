@@ -113,7 +113,6 @@ metadata:
 spec:
   externalTrafficPolicy: Local
   type: LoadBalancer
-  loadBalancerIP: 10.5.0.49
   ports:
   - port: 443
   selector:
