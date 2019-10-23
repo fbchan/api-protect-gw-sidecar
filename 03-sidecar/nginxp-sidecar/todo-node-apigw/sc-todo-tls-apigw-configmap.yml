@@ -1,0 +1,109 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sc-todo-tls-apigw-configmap
+
+data:
+  nginx.conf: |
+     user  nginx;
+     worker_processes  auto;
+
+     error_log  /var/log/nginx/error.log notice;
+     pid        /var/run/nginx.pid;
+
+     events {
+         worker_connections  1024;
+     }
+
+     http {
+         include       /etc/nginx/mime.types;
+         default_type  application/octet-stream;
+
+         log_format ltsv 'time:$time_local\t'
+             'status:$status\t'
+             'request_time:$request_time\t'
+             'upstream_addr:$upstream_addr\t'
+             'upstream_response_time:$upstream_response_time\t'
+             'upstream_cache_status:$upstream_cache_status\t'
+             'body_bytes_sent:$body_bytes_sent\t'
+             'remote_addr:$remote_addr\t'
+             'host:$host\t'
+             'hostname:$hostname\t'
+             'request_method:$request_method\t'
+             'request_uri:$request_uri\t'
+             'protocol:$server_protocol\t'
+             'x-forwarded-for: $proxy_add_x_forwarded_for\t'
+             'http_referer:$http_referer\t'
+             'http_user_agent:$http_user_agent';
+
+         #access_log  /var/log/nginx/access.log ltsv if=$log_ip;
+
+         sendfile        on;
+         #tcp_nopush     on;
+
+         keepalive_timeout  65;
+
+         #gzip  on;
+         map $remote_addr $log_ip {
+             "127.0.0.1" 0;
+             default 1;
+         }
+
+         server {
+         listen 443 ssl;
+
+         # allow large body sizes
+         client_max_body_size 32m;
+
+         # increase client body buffer for performance.
+         client_body_buffer_size 128k;
+
+         # map these into the nginx container using a volume secret
+         ssl_certificate       /etc/nginx/ssl/tls.crt;
+         ssl_certificate_key   /etc/nginx/ssl/tls.key;
+
+         # hardening protocols & ciphers: https://mozilla.github.io/server-side-tls/     ssl-config-generator/?server=nginx-1.13.1&openssl=1.1.0&hsts=yes&profile=modern
+         ssl_protocols TLSv1.2;
+         ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDH     E-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA3     84:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
+         ssl_prefer_server_ciphers on;
+
+         ssl_session_cache shared:SSL:20m;
+
+         #access_log /dev/stdout;
+         access_log /var/log/nginx/access.log ltsv if=$log_ip;
+         #error_log /dev/stdout info;
+
+         location / {
+             # proxy to upstream application
+             proxy_pass http://127.0.0.1:8080;
+
+             # don't use http 1.0 so keepalive enabled by default
+             proxy_http_version 1.1;
+
+             # prevent client from closing keepalive
+             proxy_set_header Connection "";
+
+             # don't need timeouts for process to process communication
+             # (why complicate things with this MITM proxy? let client timeout)
+             proxy_send_timeout 86400s;
+             proxy_read_timeout 86400s;
+
+             # don't write client body to docker file system
+             proxy_request_buffering off;
+         }
+         location /api/ {
+            proxy_pass https://nginxp-microgw-e-svc/api/;
+            proxy_http_version 1.1;
+            proxy_send_timeout 86400s;
+            proxy_read_timeout 86400s;
+            proxy_request_buffering off;
+         }
+         location /todos {
+            proxy_pass https://nginxp-microgw-e-svc/todos;
+            proxy_http_version 1.1;
+            proxy_send_timeout 86400s;
+            proxy_read_timeout 86400s;
+            proxy_request_buffering off;
+         }
+      }
+     }

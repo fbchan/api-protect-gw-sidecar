@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bt-demo-sc-nginxp-svc
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - port: 443
+    targetPort: 443
+    protocol: TCP
+    name: http
+  selector:
+    app: bt-demo-sc-nginxp
+  type: LoadBalancer
+  loadBalancerIP: 10.5.0.46
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bt-demo-sc-nginxp
+spec:
+  selector:
+    matchLabels:
+      app: bt-demo-sc-nginxp
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: bt-demo-sc-nginxp
+    spec:
+      containers:
+      - name: nginx-sidecar
+        image: reg.foobz.com.au/foobz/nginxp-sidecar:slim
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 443
+        volumeMounts:
+        - name: secret-volume
+          mountPath: /etc/nginx/ssl
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+        - name: nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      - name: bt-demo-apps
+        image: reg.foobz.com.au/foobz/bt-demo-apps
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8888
+      - name: fluentd
+        image: reg.foobz.com.au/foobz/fluentd
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: FLUTNTD_ARGS
+          value: -c /etc/td-agent/td-agent.conf
+        volumeMounts:
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+        - name: config-volume
+          mountPath: /etc/td-agent
+      volumes:
+        - name: nginx-logs
+          emptyDir: {}
+        - name: config-volume
+          configMap:
+            name: sc-fluentd-td-configmap
+        - name: secret-volume
+          secret:
+            secretName: foobz-tls
+        - name: nginx-conf
+          configMap:
+             name: sc-nginx-conf-tls-configmap

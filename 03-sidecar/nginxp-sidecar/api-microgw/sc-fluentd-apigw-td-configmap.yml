@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sc-fluentd-apigw-td-configmap
+
+data:
+  td-agent.conf: |
+    <source>
+      @type tail
+      path /var/log/nginx/access.log
+      tag nginx.access
+      pos_file /var/log/td-agent/nginx-access.log.pos
+      format /^^(?<remote>[^ ]*) - "(?<api_client>[^ ]*)" \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<status>[^ ]*) (?<sent_byte>[^ ]*) "(?<referer>[^\"]*)" "(?<agent>[^\"]*)" "(?<http_x_forwarded_for>[^\"]*)" (?<apim_env>[^ ]*) (?<apim_def>[^ ]*) (?<apim_entrypoint>[^ ]*) "(?<apim_env_name>[^ ]*)" "(?<apim_def_name>[^ ]*)" -$/
+      time_format %d/%b/%Y:%H:%M:%S %z
+    </source>
+
+    <match nginx.*>
+     @type elasticsearch
+     logstash_format true
+     host 192.168.211.11 
+     port 9200
+     <buffer tag>
+       @type memory # or file
+       flush_thread_count 4
+     </buffer>
+     reload_connections false
+     request_timeout 60s
+     reconnect_on_error true
+     reload_on_failure true
+     type_name nginxp-apigw
+     logstash_prefix nginxp-apigw
+    </match>

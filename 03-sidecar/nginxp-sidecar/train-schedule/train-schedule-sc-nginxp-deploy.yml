@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: train-schedule-sc-nginxp-svc
+spec:
+  externalTrafficPolicy: Local
+  loadBalancerIP: 10.5.0.27
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: http-proxy
+  - port: 443
+    targetPort: 443
+    protocol: TCP
+    name: http
+  selector:
+    app: train-schedule-sc-nginxp
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: train-schedule-sc-nginxp
+spec:
+  selector:
+    matchLabels:
+      app: train-schedule-sc-nginxp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: train-schedule-sc-nginxp
+    spec:
+      containers:
+      - name: nginx-sidecar
+        image: reg.foobz.com.au/foobz/nginxp-sidecar:slim
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 443
+        volumeMounts:
+        - name: secret-volume
+          mountPath: /etc/nginx/ssl
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+        - name: nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      - name: train-schedule-apps
+        image: reg.foobz.com.au/foobz/train-schedule:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+      - name: fluentd
+        image: reg.foobz.com.au/foobz/fluentd
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: FLUTNTD_ARGS
+          value: -c /etc/td-agent/td-agent.conf
+        volumeMounts:
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+        - name: config-volume
+          mountPath: /etc/td-agent
+      volumes:
+        - name: nginx-logs
+          emptyDir: {}
+        - name: config-volume
+          configMap:
+            name: sc-fluentd-td-configmap
+        - name: secret-volume
+          secret:
+            secretName: foobz-tls
+        - name: nginx-conf
+          configMap:
+             name: sc-nginx-conf-tls-8080-configmap

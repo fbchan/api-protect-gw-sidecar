@@ -1,0 +1,84 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: hackazone-api-sc-nginxp
+spec:
+  selector:
+    app: hackazone-api-sc-nginxp
+  ports:
+  - protocol: TCP
+    port: 443
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: hackazone-frontend-https
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  loadBalancerIP: 10.5.0.53
+  selector:
+    app: hackazone-api-sc-nginxp
+  ports:
+  - protocol: TCP
+    port: 443
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hackazone-api-sc-nginxp
+  labels:
+    app: hackazone-api-sc-nginxp
+spec:
+  selector:
+    matchLabels:
+      app: hackazone-api-sc-nginxp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hackazone-api-sc-nginxp
+    spec:
+      containers:
+      - name: nginx-sidecar
+        image: reg.foobz.com.au/foobz/nginxp-sidecar:slim
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 443
+        volumeMounts:
+        - name: secret-volume
+          mountPath: /etc/nginx/ssl
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+        - name: nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      - name: hackazone-api-sc-nginxp
+        image: mutzel/all-in-one-hackazon:postinstall
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+      - name: fluentd
+        image: reg.foobz.com.au/foobz/fluentd
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: FLUTNTD_ARGS
+          value: -c /etc/td-agent/td-agent.conf
+        volumeMounts:
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+        - name: config-volume
+          mountPath: /etc/td-agent
+      volumes:
+        - name: nginx-logs
+          emptyDir: {}
+        - name: config-volume
+          configMap:
+            name: sc-fluentd-td-configmap
+        - name: secret-volume
+          secret:
+            secretName: foobz-tls
+        - name: nginx-conf
+          configMap:
+             name: sc-nginx-conf-tls-80-configmap

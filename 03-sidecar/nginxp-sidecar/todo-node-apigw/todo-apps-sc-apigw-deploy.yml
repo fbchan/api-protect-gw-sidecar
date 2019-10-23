@@ -1,0 +1,73 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-sc-apigw-nginxp-svc
+spec:
+  externalTrafficPolicy: Local 
+  loadBalancerIP: 10.5.0.28
+  ports:
+  - port: 443
+    targetPort: 443
+    protocol: TCP
+    name: http
+  selector:
+    app: todo-sc-apigw-nginxp
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-sc-apigw-nginxp
+spec:
+  selector:
+    matchLabels:
+      app: todo-sc-apigw-nginxp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: todo-sc-apigw-nginxp
+    spec:
+      containers:
+      - name: nginx-sidecar
+        image: reg.foobz.com.au/foobz/nginxp-sidecar:slim
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 443
+        volumeMounts:
+        - name: secret-volume
+          mountPath: /etc/nginx/ssl
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+        - name: nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      - name: todo-apps
+        image: foobz/node-todo:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+      - name: fluentd
+        image: reg.foobz.com.au/foobz/fluentd
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: FLUTNTD_ARGS
+          value: -c /etc/td-agent/td-agent.conf
+        volumeMounts:
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+        - name: config-volume
+          mountPath: /etc/td-agent
+      volumes:
+        - name: nginx-logs
+          emptyDir: {}
+        - name: config-volume
+          configMap:
+            name: sc-fluentd-td-configmap
+        - name: secret-volume
+          secret:
+            secretName: foobz-tls
+        - name: nginx-conf
+          configMap:
+             name: sc-todo-tls-apigw-configmap

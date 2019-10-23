@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginxp-microgw-a-svc
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  loadBalancerIP: 10.5.0.22
+  selector:
+    app: nginxp-microgw-a
+  ports:
+  - protocol: TCP
+    port: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginxp-microgw-a-deploy
+spec:
+  selector:
+    matchLabels:
+      app: nginxp-microgw-a
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nginxp-microgw-a
+    spec:
+      containers:
+      - name: nginxp-microgw-a
+        image: reg.foobz.com.au/foobz/nginx-plus-ctrl-agent:slim
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+      - name: fluentd
+        image: reg.foobz.com.au/foobz/fluentd
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: FLUTNTD_ARGS
+          value: -c /etc/td-agent/td-agent.conf
+        volumeMounts:
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+        - name: config-volume
+          mountPath: /etc/td-agent
+      volumes:
+        - name: nginx-logs
+          emptyDir: {}
+        - name: config-volume
+          configMap:
+            name: sc-fluentd-apigw-td-configmap

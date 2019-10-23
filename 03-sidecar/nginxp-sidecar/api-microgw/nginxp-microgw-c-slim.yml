@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginxp-microgw-c-svc
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  loadBalancerIP: 10.5.0.24
+  selector:
+    app: nginxp-microgw-c
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: 443
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginxp-microgw-c-deploy
+spec:
+  selector:
+    matchLabels:
+      app: nginxp-microgw-c
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginxp-microgw-c
+    spec:
+      containers:
+      - name: nginxp-microgw-c
+        image: reg.foobz.com.au/foobz/nginx-plus-ctrl-agent:slim
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 443
+        volumeMounts:
+        - name: secret-volume
+          mountPath: /etc/nginx/ssl  
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+      - name: fluentd
+        image: reg.foobz.com.au/foobz/fluentd
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: FLUTNTD_ARGS
+          value: -c /etc/td-agent/td-agent.conf
+        volumeMounts:
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+        - name: config-volume
+          mountPath: /etc/td-agent
+      volumes:
+        - name: nginx-logs
+          emptyDir: {}
+        - name: config-volume
+          configMap:
+            name: sc-fluentd-apigw-td-configmap
+        - name: secret-volume
+          secret:
+            secretName: foobz-tls

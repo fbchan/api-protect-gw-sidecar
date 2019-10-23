@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sc-fluentd-td-configmap
+
+data:
+  td-agent.conf: |
+    <source>
+      @type tail
+      format ltsv
+      path /var/log/nginx/access.log
+      tag nginx.access
+      pos_file /var/log/td-agent/nginx-access.log.pos
+      time_format %d/%b/%Y:%H:%M:%S %z
+    </source>
+
+    <match nginx.*>
+     @type elasticsearch
+     logstash_format true
+     host 192.168.211.11 # elasticsearch IP
+     port 9200
+     <buffer tag>
+       @type memory # or file
+       flush_thread_count 4
+     </buffer>
+     reconnect_on_error true
+     request_timeout 60s
+     reload_on_failure true
+     reload_connections false
+     type_name fluentd-nginx
+     logstash_prefix nginxp-sidecar
+    </match>
