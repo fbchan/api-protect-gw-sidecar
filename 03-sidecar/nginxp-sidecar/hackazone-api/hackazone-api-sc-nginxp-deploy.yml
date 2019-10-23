@@ -16,7 +16,6 @@ metadata:
 spec:
   externalTrafficPolicy: Local
   type: LoadBalancer
-  loadBalancerIP: 10.5.0.53
   selector:
     app: hackazone-api-sc-nginxp
   ports:
