@@ -1,11 +1,14 @@
-# To Compile NGINX+ images
+# To Build NGINX+ images
 **Step 1**
+
 cd to nginx-plus-ctrl-agent
 
 **Step 2**
+
 Replace your own nginx-repo.crt and nginx-repo.key
 
 **Step 3**
+
 Identify the following parameter before hand
 
 - CTRL\_HOST --> NGINX Controller FQDN
