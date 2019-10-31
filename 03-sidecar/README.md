@@ -22,7 +22,7 @@ Identify the following parameter before hand
 
 **To Build**
 
-docker build --no-cache --build-arg API\_KEY=540286ae9ad5752ae7d7ca2d8ac527f8 --build-arg CTRL\_HOST=nginx-ctrl.foobz.com.au  -t reg.foobz.com.au/foobz/nginx-plus-ctrl-agent:slim .
+docker build --no-cache --build-arg API\_KEY=540286ae9ad5752ae7d7cagd6d7dhdyd7 --build-arg CTRL\_HOST=nginx-ctrl.foobz.com.au  -t reg.foobz.com.au/foobz/nginx-plus-ctrl-agent:slim .
 
 **Push to private repository**
 
@@ -30,3 +30,10 @@ docker push reg.foobz.com.au/foobz/nginx-plus-ctrl-agent:slim
 
 Youtube Video
 https://www.youtube.com/watch?v=shEsY-kDuQA
+
+# Deploy Sidecar container
+3 important files
+
+1. nginx+ configmap
+2. fluentd configmap
+3. application deployment manifest
