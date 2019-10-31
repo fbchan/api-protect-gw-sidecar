@@ -17,6 +17,7 @@ Identify the following parameter before hand
 **Example**
 
 **To Build**
+
 docker build --no-cache --build-arg API\_KEY=540286ae9ad5752ae7d7ca2d8ac527f8 --build-arg CTRL\_HOST=nginx-ctrl.foobz.com.au  -t reg.foobz.com.au/foobz/nginx-plus-ctrl-agent:slim .
 
 **Push to private repository**
