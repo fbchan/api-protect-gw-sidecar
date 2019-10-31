@@ -22,11 +22,11 @@ Identify the following parameter before hand
 
 **To Build**
 
-docker build --no-cache --build-arg API\_KEY=540286ae9ad5752ae7d7cagd6d7dhdyd7 --build-arg CTRL\_HOST=nginx-ctrl.foobz.com.au  -t reg.foobz.com.au/foobz/nginx-plus-ctrl-agent:slim .
+ubuntu:~$ docker build --no-cache --build-arg API\_KEY=540286ae9ad5752ae7d7cagd6d7dhdyd7 --build-arg CTRL\_HOST=nginx-ctrl.foobz.com.au  -t reg.foobz.com.au/foobz/nginx-plus-ctrl-agent:slim .
 
 **Push to private repository**
 
-docker push reg.foobz.com.au/foobz/nginx-plus-ctrl-agent:slim
+ubuntu:~$ docker push reg.foobz.com.au/foobz/nginx-plus-ctrl-agent:slim
 
 Youtube Video
 https://www.youtube.com/watch?v=shEsY-kDuQA
@@ -35,7 +35,17 @@ https://www.youtube.com/watch?v=shEsY-kDuQA
 <img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/03-sidecar/nginxp-sidecar/sidecar-layout.png alt="Sidecar Layout" width=800>
 
 3 important files
-
 1. nginx+ configmap
 2. fluentd configmap
 3. application deployment manifest
+
+### Deploy NGINX configmap
+ubuntu:~$ kubectl apply -f sc-nginx-conf-tls-8080-configmap.yml
+
+### Deploy fluentd configmap
+ubuntu:~$ kubectl apply -f sc-fluentd-td-configmap.yml
+#### Note
+Ensure you change your ELK server in the configmap.
+
+### Deploy application manifest
+ubuntu:~$ kubectl apply -f train-schedule-sc-nginxp-deploy.yml
