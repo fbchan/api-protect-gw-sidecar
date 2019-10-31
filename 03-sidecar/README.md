@@ -32,7 +32,7 @@ Youtube Video
 https://www.youtube.com/watch?v=shEsY-kDuQA
 
 # Deploy Sidecar container
-<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/03-sidecar/nginxp-sidecar/sidecar-layout.png alt="Sidecar Layout" width=600>
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/03-sidecar/nginxp-sidecar/sidecar-layout.png alt="Sidecar Layout" width=800>
 
 3 important files
 
