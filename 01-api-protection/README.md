@@ -2,3 +2,13 @@
 
 Youtube Video
 https://www.youtube.com/watch?v=nC8_NlifLEg
+
+
+## Example F5 in-built API Protection Dashboard
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/01-api-protection/F5-API-P-01.png alt="API_Dashboard1" width=800>
+
+
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/01-api-protection/F5-API-P-02.png alt="API_Dashboard1" width=800>
+
+
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/01-api-protection/F5-API-P-03.png alt="API_Dashboard1" width=800>

@@ -45,7 +45,7 @@ ubuntu:~$ kubectl apply -f sc-nginx-conf-tls-8080-configmap.yml
 ### Deploy fluentd configmap
 ubuntu:~$ kubectl apply -f sc-fluentd-td-configmap.yml
 #### Note
-Ensure you change your ELK server in the configmap.
+Ensure you change your ELK server host and port reference in the configmap.
 
 ### Deploy application manifest
 ubuntu:~$ kubectl apply -f train-schedule-sc-nginxp-deploy.yml
