@@ -32,6 +32,8 @@ Youtube Video
 https://www.youtube.com/watch?v=shEsY-kDuQA
 
 # Deploy Sidecar container
+<img src=https://raw.githubusercontent.com/fbchan/api-protect-gw-sidecar/master/03-sidecar/nginxp-sidecar/sidecar-layout.svg alt="Sidecar Layout" width=500>
+
 3 important files
 
 1. nginx+ configmap
