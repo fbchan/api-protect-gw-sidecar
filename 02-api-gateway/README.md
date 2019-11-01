@@ -11,5 +11,17 @@ ubuntu:~$ kubectl apply -f nginxp-microgw-a-slim.yml
 Ensure you  point your nginx+ and fluentd container section to your containers
 
 ### Push API Management Policy from NGINX Controller
-<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/03-sidecar/nginxp-sidecar/sidecar-layout.png alt="Sidecar Layout" width=800>
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/02-api-gateway/api-microgw/api-m-00.png alt="API-M 00" width=800>
 
+
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/02-api-gateway/api-microgw/api-m-01.png alt="API-M 01" width=800>
+
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/02-api-gateway/api-microgw/api-m-02.png alt="API-M 02" width=800>
+
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/02-api-gateway/api-microgw/api-m-03.png alt="API-M 03" width=800>
+
+
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/02-api-gateway/api-microgw/api-m-04.png alt="API-M 04" width=800>
+
+
+Please contact your local F5/NGINX Sales representative to arrange for a DEMO or evaluation key.
