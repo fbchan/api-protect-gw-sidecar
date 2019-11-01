@@ -1,7 +1,11 @@
 # F5 API Protection
 
-Youtube Video
+
+### NGINX+ API GW
 https://www.youtube.com/watch?v=nC8_NlifLEg
+
+### F5 API Protection
+https://www.youtube.com/watch?v=ZNbo1kcSDxk&t=
 
 
 ## Example F5 in-built API Protection Dashboard
