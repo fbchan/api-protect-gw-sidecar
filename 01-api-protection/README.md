@@ -1,9 +1,5 @@
 # F5 API Protection
 
-
-### NGINX+ API GW
-https://www.youtube.com/watch?v=nC8_NlifLEg
-
 ### F5 API Protection
 https://www.youtube.com/watch?v=ZNbo1kcSDxk&t=
 

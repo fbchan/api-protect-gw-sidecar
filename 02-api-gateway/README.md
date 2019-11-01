@@ -10,6 +10,9 @@ ubuntu:~$ kubectl apply -f nginxp-microgw-a-slim.yml
 ##### Note
 Ensure you  point your nginx+ and fluentd container section to your containers
 
+### NGINX+ API GW
+https://www.youtube.com/watch?v=nC8_NlifLEg
+
 ### Push API Management Policy from NGINX Controller
 <img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/02-api-gateway/api-microgw/api-m-00.png alt="API-M 00" width=800>
 
