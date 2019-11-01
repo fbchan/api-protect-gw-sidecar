@@ -28,8 +28,16 @@ ubuntu:~$ docker build --no-cache --build-arg API\_KEY=540286ae9ad5752ae7d7cagd6
 
 ubuntu:~$ docker push reg.foobz.com.au/foobz/nginx-plus-ctrl-agent:slim
 
-Youtube Video
-https://www.youtube.com/watch?v=shEsY-kDuQA
+### Video
+### Build NGINX+ Image with NGINX Controller API_KEY
+https://www.youtube.com/watch?v=shEsY-kDuQA&t
+
+### CI/CD Pipeline with Jenkins – Build, Scan and Deploy NGINX+ Sidecar on Kubernetes
+https://www.youtube.com/watch?v=CKMlJ9mRflA&t
+
+### Deploy NGINX+ Sidecar with application and auto register onto NGINX Controller
+https://www.youtube.com/watch?v=cX5fq-kxjxM
+
 
 # Deploy Sidecar container
 <img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/03-sidecar/nginxp-sidecar/sidecar-layout.png alt="Sidecar Layout" width=800>

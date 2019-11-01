@@ -8,6 +8,10 @@ Tested with ELK v7.0.1
 ### Note
 After you import visualization and dashboard, ensure you change/replace imported index pattern UUID with your index pattern UUID.
 
+## Video
+### Visibility from F5 NGINX+ API Protection, API MicroGW and Sidecar
+https://www.youtube.com/watch?v=f9PUNayPCGs&t
+
  ## API Protection Dashboard
 <img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/04-ELK/dashboard-1.png alt="API Protection" width=800>
 
