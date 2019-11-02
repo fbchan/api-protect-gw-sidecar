@@ -13,10 +13,10 @@ After you import visualization and dashboard, ensure you change/replace imported
 https://www.youtube.com/watch?v=f9PUNayPCGs&t
 
  ## API Protection Dashboard
-<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/04-ELK/dashboard-1.png alt="API Protection" width=800>
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/04-ELK/dashboard-1.png alt="API Protection" width=1000>
 
  ## API Gateway Dashboard
-<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/04-ELK/dashboard-2.png alt="API Gateway" width=800>
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/04-ELK/dashboard-2.png alt="API Gateway" width=1000>
 
  ## NGINX+ Sidecar Dashboard
-<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/04-ELK/dashboard-3.png alt="Sidecar" width=800>
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/04-ELK/dashboard-3.png alt="Sidecar" width=1000>
