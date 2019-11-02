@@ -40,7 +40,7 @@ https://www.youtube.com/watch?v=cX5fq-kxjxM
 
 
 # Deploy Sidecar container
-<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/03-sidecar/nginxp-sidecar/sidecar-layout.png alt="Sidecar Layout" width=800>
+<img src=https://github.com/fbchan/api-protect-gw-sidecar/blob/master/03-sidecar/nginxp-sidecar/sidecar-layout.png alt="Sidecar Layout" width=1000>
 
 3 important files
 1. nginx+ configmap
