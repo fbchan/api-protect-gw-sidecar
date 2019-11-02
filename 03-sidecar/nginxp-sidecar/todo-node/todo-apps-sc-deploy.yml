@@ -34,8 +34,7 @@ kind: Service
 metadata:
   name: todo-sc-nginxp-svc
 spec:
-  externalTrafficPolicy: Local 
-  loadBalancerIP: 10.5.0.47
+  externalTrafficPolicy: Local
   ports:
   - port: 443
     targetPort: 443

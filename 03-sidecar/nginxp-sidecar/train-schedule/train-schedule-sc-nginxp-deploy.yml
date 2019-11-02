@@ -4,7 +4,6 @@ metadata:
   name: train-schedule-sc-nginxp-svc
 spec:
   externalTrafficPolicy: Local
-  loadBalancerIP: 10.5.0.27
   ports:
   - port: 8080
     targetPort: 8080
