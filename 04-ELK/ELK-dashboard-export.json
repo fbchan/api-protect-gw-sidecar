@@ -1,139 +1,12 @@
 [
   {
-    "_id": "80413e60-ed8a-11e9-be19-3751cce751e2",
-    "_type": "dashboard",
-    "_source": {
-      "title": "BT NGINX+ APIGW - Overview",
-      "hits": 0,
-      "description": "",
-      "panelsJSON": "[{\"embeddableConfig\":{},\"gridData\":{\"h\":22,\"i\":\"1\",\"w\":23,\"x\":12,\"y\":4},\"panelIndex\":\"1\",\"title\":\"API GW: API Access Flow\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_0\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":13,\"i\":\"2\",\"w\":17,\"x\":25,\"y\":26},\"panelIndex\":\"2\",\"title\":\"API GW: Resources Health\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_1\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":11,\"i\":\"4\",\"w\":12,\"x\":0,\"y\":15},\"panelIndex\":\"4\",\"title\":\"API GW: API Definition\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_2\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":11,\"i\":\"5\",\"w\":13,\"x\":35,\"y\":4},\"panelIndex\":\"5\",\"title\":\"API GW: Top API Call by Environment\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_3\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":11,\"i\":\"8\",\"w\":12,\"x\":0,\"y\":4},\"panelIndex\":\"8\",\"title\":\"API GW: Top Client\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_4\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":11,\"i\":\"10\",\"w\":13,\"x\":35,\"y\":15},\"panelIndex\":\"10\",\"title\":\"API GW: Top Used Method\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_5\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":13,\"i\":\"11\",\"w\":25,\"x\":0,\"y\":26},\"panelIndex\":\"11\",\"title\":\"API GW: API Health\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_6\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":7,\"i\":\"12\",\"w\":6,\"x\":42,\"y\":26},\"panelIndex\":\"12\",\"title\":\"\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_7\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":6,\"i\":\"13\",\"w\":6,\"x\":42,\"y\":33},\"panelIndex\":\"13\",\"title\":\"\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_8\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":4,\"i\":\"14\",\"w\":43,\"x\":5,\"y\":0},\"panelIndex\":\"14\",\"title\":\"\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_9\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":4,\"i\":\"15\",\"w\":5,\"x\":0,\"y\":0},\"panelIndex\":\"15\",\"title\":\"\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_10\"}]",
-      "optionsJSON": "{\"hidePanelTitles\":false,\"useMargins\":true}",
-      "version": 1,
-      "timeRestore": false,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
-      }
-    },
-    "_migrationVersion": {
-      "dashboard": "7.0.0"
-    },
-    "_references": [
-      {
-        "name": "panel_0",
-        "type": "visualization",
-        "id": "4c8cc190-d12c-11e9-9a67-834aeb3b3bcc"
-      },
-      {
-        "name": "panel_1",
-        "type": "visualization",
-        "id": "9fc162e0-ecce-11e9-a179-0354456f2a91"
-      },
-      {
-        "name": "panel_2",
-        "type": "visualization",
-        "id": "ddaa8680-ecca-11e9-9a67-834aeb3b3bcc"
-      },
-      {
-        "name": "panel_3",
-        "type": "visualization",
-        "id": "ed419d50-ec06-11e9-9a67-834aeb3b3bcc"
-      },
-      {
-        "name": "panel_4",
-        "type": "visualization",
-        "id": "55fa04e0-ec9d-11e9-9a67-834aeb3b3bcc"
-      },
-      {
-        "name": "panel_5",
-        "type": "visualization",
-        "id": "919e1460-ee63-11e9-be19-3751cce751e2"
-      },
-      {
-        "name": "panel_6",
-        "type": "visualization",
-        "id": "f2bb9ab0-ecce-11e9-a179-0354456f2a91"
-      },
-      {
-        "name": "panel_7",
-        "type": "visualization",
-        "id": "1d773d80-55dc-11e8-a695-171fb712da36"
-      },
-      {
-        "name": "panel_8",
-        "type": "visualization",
-        "id": "56e85ee0-ecd1-11e9-a179-0354456f2a91"
-      },
-      {
-        "name": "panel_9",
-        "type": "visualization",
-        "id": "0c1d84c0-ec0a-11e9-9a67-834aeb3b3bcc"
-      },
-      {
-        "name": "panel_10",
-        "type": "visualization",
-        "id": "4447f720-efef-11e9-be19-3751cce751e2"
-      }
-    ]
-  },
-  {
-    "_id": "161146e0-eef5-11e9-be19-3751cce751e2",
-    "_type": "dashboard",
-    "_source": {
-      "title": "BT API PROTECT - Overview",
-      "hits": 0,
-      "description": "",
-      "panelsJSON": "[{\"embeddableConfig\":{},\"gridData\":{\"h\":15,\"i\":\"5\",\"w\":16,\"x\":0,\"y\":19},\"panelIndex\":\"5\",\"title\":\"API PROTECT: API Violation\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_0\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":15,\"i\":\"6\",\"w\":48,\"x\":0,\"y\":4},\"panelIndex\":\"6\",\"title\":\"API PROTECT: API Violation Timeline\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_1\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":15,\"i\":\"7\",\"w\":16,\"x\":32,\"y\":19},\"panelIndex\":\"7\",\"title\":\"API PROTECT: API Attack Type\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_2\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":15,\"i\":\"8\",\"w\":16,\"x\":16,\"y\":19},\"panelIndex\":\"8\",\"title\":\"API PROTECT: API Attack Name\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_3\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":4,\"i\":\"9\",\"w\":43,\"x\":5,\"y\":0},\"panelIndex\":\"9\",\"title\":\"\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_4\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":4,\"i\":\"11\",\"w\":5,\"x\":0,\"y\":0},\"panelIndex\":\"11\",\"title\":\"\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_5\"}]",
-      "optionsJSON": "{\"hidePanelTitles\":false,\"useMargins\":true}",
-      "version": 1,
-      "timeRestore": false,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
-      }
-    },
-    "_migrationVersion": {
-      "dashboard": "7.0.0"
-    },
-    "_references": [
-      {
-        "name": "panel_0",
-        "type": "visualization",
-        "id": "73b28ee0-eef9-11e9-be19-3751cce751e2"
-      },
-      {
-        "name": "panel_1",
-        "type": "visualization",
-        "id": "c677fb10-eef9-11e9-be19-3751cce751e2"
-      },
-      {
-        "name": "panel_2",
-        "type": "visualization",
-        "id": "0e14bb00-5ee9-11e7-b1f2-f1590ba84147"
-      },
-      {
-        "name": "panel_3",
-        "type": "visualization",
-        "id": "AV6p1wYxg19OKBnGJs1C"
-      },
-      {
-        "name": "panel_4",
-        "type": "visualization",
-        "id": "0c1d84c0-ec0a-11e9-9a67-834aeb3b3bcc"
-      },
-      {
-        "name": "panel_5",
-        "type": "visualization",
-        "id": "39d30560-efe9-11e9-be19-3751cce751e2"
-      }
-    ]
-  },
-  {
     "_id": "fc2df850-ec0a-11e9-9a67-834aeb3b3bcc",
     "_type": "dashboard",
     "_source": {
       "title": "BT F5 NGINX+ API Protect , APIGW and Sidecar Master Dashboard",
       "hits": 0,
       "description": "",
-      "panelsJSON": "[{\"embeddableConfig\":{},\"gridData\":{\"h\":33,\"i\":\"1\",\"w\":33,\"x\":0,\"y\":4},\"panelIndex\":\"1\",\"title\":\"SIDECAR: Access Flow (Source IP to NGINX+ Sidecar Proxy)\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_0\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":11,\"i\":\"2\",\"w\":15,\"x\":33,\"y\":15},\"panelIndex\":\"2\",\"title\":\"SIDECAR: Popularity\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_1\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":4,\"i\":\"4\",\"w\":43,\"x\":5,\"y\":0},\"panelIndex\":\"4\",\"title\":\"\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_2\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":11,\"i\":\"5\",\"w\":15,\"x\":33,\"y\":26},\"panelIndex\":\"5\",\"title\":\"SIDECAR: Top Host with Status Code\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_3\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":11,\"i\":\"6\",\"w\":15,\"x\":33,\"y\":37},\"panelIndex\":\"6\",\"title\":\"SIDECAR: Top User Agent\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_4\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":11,\"i\":\"8\",\"w\":15,\"x\":33,\"y\":4},\"panelIndex\":\"8\",\"title\":\"SIDECAR: Top Source IP Address\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_5\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":11,\"i\":\"9\",\"w\":33,\"x\":0,\"y\":37},\"panelIndex\":\"9\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_6\"},{\"embeddableConfig\":{},\"gridData\":{\"h\":4,\"i\":\"10\",\"w\":5,\"x\":0,\"y\":0},\"panelIndex\":\"10\",\"title\":\"\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_7\"}]",
+      "panelsJSON": "[{\"embeddableConfig\":{},\"gridData\":{\"x\":33,\"y\":15,\"w\":15,\"h\":11,\"i\":\"2\"},\"panelIndex\":\"2\",\"title\":\"SIDECAR: Popularity\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_0\"},{\"embeddableConfig\":{},\"gridData\":{\"x\":5,\"y\":0,\"w\":43,\"h\":4,\"i\":\"4\"},\"panelIndex\":\"4\",\"title\":\"\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_1\"},{\"embeddableConfig\":{},\"gridData\":{\"x\":33,\"y\":26,\"w\":15,\"h\":11,\"i\":\"5\"},\"panelIndex\":\"5\",\"title\":\"SIDECAR: Top Host with Status Code\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_2\"},{\"embeddableConfig\":{},\"gridData\":{\"x\":33,\"y\":37,\"w\":15,\"h\":11,\"i\":\"6\"},\"panelIndex\":\"6\",\"title\":\"SIDECAR: Top User Agent\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_3\"},{\"embeddableConfig\":{},\"gridData\":{\"x\":33,\"y\":4,\"w\":15,\"h\":11,\"i\":\"8\"},\"panelIndex\":\"8\",\"title\":\"SIDECAR: Top Source IP Address\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_4\"},{\"embeddableConfig\":{},\"gridData\":{\"x\":0,\"y\":37,\"w\":33,\"h\":11,\"i\":\"9\"},\"panelIndex\":\"9\",\"version\":\"7.0.1\",\"title\":\"SIDECAR: Message per 5 minutes count\",\"panelRefName\":\"panel_5\"},{\"embeddableConfig\":{},\"gridData\":{\"x\":0,\"y\":0,\"w\":5,\"h\":4,\"i\":\"10\"},\"panelIndex\":\"10\",\"title\":\"\",\"version\":\"7.0.1\",\"panelRefName\":\"panel_6\"},{\"gridData\":{\"x\":0,\"y\":4,\"w\":33,\"h\":33,\"i\":\"11\"},\"version\":\"7.0.1\",\"panelIndex\":\"11\",\"embeddableConfig\":{},\"title\":\"SIDECAR: Access Flow (Source IP to NGINX+ Sidecar Proxy)\",\"panelRefName\":\"panel_7\"}]",
       "optionsJSON": "{\"hidePanelTitles\":false,\"useMargins\":true}",
       "version": 1,
       "timeRestore": false,
@@ -148,42 +21,42 @@
       {
         "name": "panel_0",
         "type": "visualization",
-        "id": "c824e870-5629-11e8-b711-83a5f93b17f3"
+        "id": "cb415330-d05e-11e9-9a67-834aeb3b3bcc"
       },
       {
         "name": "panel_1",
         "type": "visualization",
-        "id": "cb415330-d05e-11e9-9a67-834aeb3b3bcc"
+        "id": "0c1d84c0-ec0a-11e9-9a67-834aeb3b3bcc"
       },
       {
         "name": "panel_2",
         "type": "visualization",
-        "id": "0c1d84c0-ec0a-11e9-9a67-834aeb3b3bcc"
+        "id": "29ec9010-ec0d-11e9-9a67-834aeb3b3bcc"
       },
       {
         "name": "panel_3",
         "type": "visualization",
-        "id": "29ec9010-ec0d-11e9-9a67-834aeb3b3bcc"
+        "id": "87488e80-ec0d-11e9-9a67-834aeb3b3bcc"
       },
       {
         "name": "panel_4",
         "type": "visualization",
-        "id": "87488e80-ec0d-11e9-9a67-834aeb3b3bcc"
+        "id": "c14432f0-ecc7-11e9-9a67-834aeb3b3bcc"
       },
       {
         "name": "panel_5",
         "type": "visualization",
-        "id": "c14432f0-ecc7-11e9-9a67-834aeb3b3bcc"
+        "id": "ce3ead00-ec9f-11e9-9a67-834aeb3b3bcc"
       },
       {
         "name": "panel_6",
         "type": "visualization",
-        "id": "ce3ead00-ec9f-11e9-9a67-834aeb3b3bcc"
+        "id": "51b9bce0-efef-11e9-be19-3751cce751e2"
       },
       {
         "name": "panel_7",
         "type": "visualization",
-        "id": "51b9bce0-efef-11e9-be19-3751cce751e2"
+        "id": "65a9dbe0-f963-11e9-b776-f1a09d2d8332"
       }
     ]
   }

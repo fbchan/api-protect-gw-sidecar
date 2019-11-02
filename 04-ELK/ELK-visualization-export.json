@@ -1,23 +1,5 @@
 [
   {
-    "_id": "c824e870-5629-11e8-b711-83a5f93b17f3",
-    "_type": "visualization",
-    "_source": {
-      "title": "F5_NGINX_SIDECAR - Flow Diagram",
-      "visState": "{\"title\":\"F5_NGINX_SIDECAR - Flow Diagram\",\"type\":\"vega\",\"params\":{\"spec\":\"{\\n  \\\"$schema\\\": \\\"https://vega.github.io/schema/vega/v3.0.json\\\",\\n  \\\"data\\\": [\\n    {\\n      \\\"name\\\": \\\"rawData\\\",\\n      \\\"url\\\": {\\n        \\\"%context%\\\": true,\\n        \\\"%timefield%\\\": \\\"@timestamp\\\",\\n        \\\"index\\\": \\\"nginxp-sidecar-*\\\",\\n        \\\"body\\\": {\\n          \\\"size\\\": 0,\\n          \\\"aggs\\\": {\\n            \\\"table\\\": {\\n              \\\"composite\\\": {\\n                \\\"size\\\": 1000,\\n                \\\"sources\\\": [\\n                  {\\\"stk1\\\": {\\\"terms\\\": {\\\"field\\\": \\\"remote_addr.keyword\\\"}}},\\n                  {\\\"stk2\\\": {\\\"terms\\\": {\\\"field\\\": \\\"hostname.keyword\\\"}}}\\n                ]\\n              }\\n            }\\n          }\\n        }\\n      },\\n      \\\"format\\\": {\\\"property\\\": \\\"aggregations.table.buckets\\\"},\\n      \\\"transform\\\": [\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.key.stk1\\\", \\\"as\\\": \\\"stk1\\\"},\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.key.stk2\\\", \\\"as\\\": \\\"stk2\\\"},\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.doc_count\\\", \\\"as\\\": \\\"size\\\"}\\n      ]\\n    },\\n    {\\n      \\\"name\\\": \\\"nodes\\\",\\n      \\\"source\\\": \\\"rawData\\\",\\n      \\\"transform\\\": [\\n        {\\n          \\\"type\\\": \\\"filter\\\",\\n          \\\"expr\\\": \\\"!groupSelector || groupSelector.stk1 == datum.stk1 || groupSelector.stk2 == datum.stk2\\\"\\n        },\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.stk1+datum.stk2\\\", \\\"as\\\": \\\"key\\\"},\\n        {\\\"type\\\": \\\"fold\\\", \\\"fields\\\": [\\\"stk1\\\", \\\"stk2\\\"], \\\"as\\\": [\\\"stack\\\", \\\"grpId\\\"]},\\n        {\\n          \\\"type\\\": \\\"formula\\\",\\n          \\\"expr\\\": \\\"datum.stack == 'stk1' ? datum.stk1+datum.stk2 : datum.stk2+datum.stk1\\\",\\n          \\\"as\\\": \\\"sortField\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"stack\\\",\\n          \\\"groupby\\\": [\\\"stack\\\"],\\n          \\\"sort\\\": {\\\"field\\\": \\\"sortField\\\", \\\"order\\\": \\\"descending\\\"},\\n          \\\"field\\\": \\\"size\\\"\\n        },\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"(datum.y0+datum.y1)/2\\\", \\\"as\\\": \\\"yc\\\"}\\n      ]\\n    },\\n    {\\n      \\\"name\\\": \\\"groups\\\",\\n      \\\"source\\\": \\\"nodes\\\",\\n      \\\"transform\\\": [\\n        {\\n          \\\"type\\\": \\\"aggregate\\\",\\n          \\\"groupby\\\": [\\\"stack\\\", \\\"grpId\\\"],\\n          \\\"fields\\\": [\\\"size\\\"],\\n          \\\"ops\\\": [\\\"sum\\\"],\\n          \\\"as\\\": [\\\"total\\\"]\\n        },\\n        {\\n          \\\"type\\\": \\\"stack\\\",\\n          \\\"groupby\\\": [\\\"stack\\\"],\\n          \\\"sort\\\": {\\\"field\\\": \\\"grpId\\\", \\\"order\\\": \\\"descending\\\"},\\n          \\\"field\\\": \\\"total\\\"\\n        },\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"scale('y', datum.y0)\\\", \\\"as\\\": \\\"scaledY0\\\"},\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"scale('y', datum.y1)\\\", \\\"as\\\": \\\"scaledY1\\\"},\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.stack == 'stk1'\\\", \\\"as\\\": \\\"rightLabel\\\"},\\n        {\\n          \\\"type\\\": \\\"formula\\\",\\n          \\\"expr\\\": \\\"datum.total/domain('y')[1]\\\",\\n          \\\"as\\\": \\\"percentage\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"name\\\": \\\"destinationNodes\\\",\\n      \\\"source\\\": \\\"nodes\\\",\\n      \\\"transform\\\": [{\\\"type\\\": \\\"filter\\\", \\\"expr\\\": \\\"datum.stack == 'stk2'\\\"}]\\n    },\\n    {\\n      \\\"name\\\": \\\"edges\\\",\\n      \\\"source\\\": \\\"nodes\\\",\\n      \\\"transform\\\": [\\n        {\\\"type\\\": \\\"filter\\\", \\\"expr\\\": \\\"datum.stack == 'stk1'\\\"},\\n        {\\n          \\\"type\\\": \\\"lookup\\\",\\n          \\\"from\\\": \\\"destinationNodes\\\",\\n          \\\"key\\\": \\\"key\\\",\\n          \\\"fields\\\": [\\\"key\\\"],\\n          \\\"as\\\": [\\\"target\\\"]\\n        },\\n        {\\n          \\\"type\\\": \\\"linkpath\\\",\\n          \\\"orient\\\": \\\"horizontal\\\",\\n          \\\"shape\\\": \\\"diagonal\\\",\\n          \\\"sourceY\\\": {\\\"expr\\\": \\\"scale('y', datum.yc)\\\"},\\n          \\\"sourceX\\\": {\\\"expr\\\": \\\"scale('x', 'stk1') + bandwidth('x')\\\"},\\n          \\\"targetY\\\": {\\\"expr\\\": \\\"scale('y', datum.target.yc)\\\"},\\n          \\\"targetX\\\": {\\\"expr\\\": \\\"scale('x', 'stk2')\\\"}\\n        },\\n        {\\n          \\\"type\\\": \\\"formula\\\",\\n          \\\"expr\\\": \\\"range('y')[0]-scale('y', datum.size)\\\",\\n          \\\"as\\\": \\\"strokeWidth\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"formula\\\",\\n          \\\"expr\\\": \\\"datum.size/domain('y')[1]\\\",\\n          \\\"as\\\": \\\"percentage\\\"\\n        }\\n      ]\\n    }\\n  ],\\n  \\\"scales\\\": [\\n    {\\n      \\\"name\\\": \\\"x\\\",\\n      \\\"type\\\": \\\"band\\\",\\n      \\\"range\\\": \\\"width\\\",\\n      \\\"domain\\\": [\\\"stk1\\\", \\\"stk2\\\"],\\n      \\\"paddingOuter\\\": 0.01,\\n      \\\"paddingInner\\\": 0.98\\n    },\\n    {\\n      \\\"name\\\": \\\"y\\\",\\n      \\\"type\\\": \\\"linear\\\",\\n      \\\"range\\\": \\\"height\\\",\\n      \\\"domain\\\": {\\\"data\\\": \\\"nodes\\\", \\\"field\\\": \\\"y1\\\"}\\n    },\\n    {\\n      \\\"name\\\": \\\"color\\\",\\n      \\\"type\\\": \\\"ordinal\\\",\\n      \\\"range\\\": \\\"category\\\",\\n      \\\"domain\\\": {\\\"data\\\": \\\"rawData\\\", \\\"fields\\\": [\\\"stk1\\\",\\\"stk2\\\"]}\\n    },\\n    {\\n      \\\"name\\\": \\\"stackNames\\\",\\n      \\\"type\\\": \\\"ordinal\\\",\\n      \\\"range\\\": [\\\"Client\\\", \\\"NGINX+ Sidecar\\\"],\\n      \\\"domain\\\": [\\\"stk1\\\", \\\"stk2\\\"]\\n    }\\n  ],\\n  \\\"axes\\\": [\\n    {\\n      \\\"orient\\\": \\\"bottom\\\",\\n      \\\"scale\\\": \\\"x\\\",\\n      \\\"encode\\\": {\\n        \\\"labels\\\": {\\n          \\\"update\\\": {\\n            \\\"text\\\": {\\\"scale\\\": \\\"stackNames\\\", \\\"field\\\": \\\"value\\\"},\\n            \\\"fontSize\\\": {\\\"value\\\": 14}\\n          }\\n        }\\n      }\\n    },\\n    {\\n      \\\"orient\\\": \\\"left\\\",\\n      \\\"scale\\\": \\\"y\\\",\\n      \\\"encode\\\": {\\\"labels\\\": {\\\"update\\\": {\\\"fontSize\\\": {\\\"value\\\": 12}}}}\\n    }\\n  ],\\n  \\\"marks\\\": [\\n    {\\n      \\\"type\\\": \\\"path\\\",\\n      \\\"name\\\": \\\"edgeMark\\\",\\n      \\\"from\\\": {\\\"data\\\": \\\"edges\\\"},\\n      \\\"clip\\\": true,\\n      \\\"encode\\\": {\\n        \\\"update\\\": {\\n          \\\"stroke\\\": [\\n            {\\n              \\\"test\\\": \\\"groupSelector && groupSelector.stack=='stk1'\\\",\\n              \\\"scale\\\": \\\"color\\\",\\n              \\\"field\\\": \\\"stk2\\\"\\n            },\\n            {\\\"scale\\\": \\\"color\\\", \\\"field\\\": \\\"stk1\\\"}\\n          ],\\n          \\\"strokeWidth\\\": {\\\"field\\\": \\\"strokeWidth\\\"},\\n          \\\"path\\\": {\\\"field\\\": \\\"path\\\"},\\n          \\\"strokeOpacity\\\": {\\n            \\\"signal\\\": \\\"!groupSelector && (groupHover.stk1 == datum.stk1 || groupHover.stk2 == datum.stk2) ? 0.75 : 0.3\\\"\\n          },\\n          \\\"zindex\\\": {\\n            \\\"signal\\\": \\\"!groupSelector && (groupHover.stk1 == datum.stk1 || groupHover.stk2 == datum.stk2) ? 1 : 0\\\"\\n          },\\n          \\\"tooltip\\\": {\\n            \\\"signal\\\": \\\"datum.stk1 + ' → ' + datum.stk2 + '    ' + format(datum.size, ',.0f') + '   (' + format(datum.percentage, '.1%') + ')'\\\"\\n          }\\n        },\\n        \\\"hover\\\": {\\\"strokeOpacity\\\": {\\\"value\\\": 0.75}}\\n      }\\n    },\\n    {\\n      \\\"type\\\": \\\"rect\\\",\\n      \\\"name\\\": \\\"groupMark\\\",\\n      \\\"from\\\": {\\\"data\\\": \\\"groups\\\"},\\n      \\\"encode\\\": {\\n        \\\"enter\\\": {\\n          \\\"fill\\\": {\\\"scale\\\": \\\"color\\\", \\\"field\\\": \\\"grpId\\\"},\\n          \\\"width\\\": {\\\"scale\\\": \\\"x\\\", \\\"band\\\": 1}\\n        },\\n        \\\"update\\\": {\\n          \\\"x\\\": {\\\"scale\\\": \\\"x\\\", \\\"field\\\": \\\"stack\\\"},\\n          \\\"y\\\": {\\\"field\\\": \\\"scaledY0\\\"},\\n          \\\"y2\\\": {\\\"field\\\": \\\"scaledY1\\\"},\\n          \\\"fillOpacity\\\": {\\\"value\\\": 0.7},\\n          \\\"tooltip\\\": {\\n            \\\"signal\\\": \\\"datum.grpId + '   ' + format(datum.total, ',.0f') + '   (' + format(datum.percentage, '.1%') + ')'\\\"\\n          }\\n        },\\n        \\\"hover\\\": {\\\"fillOpacity\\\": {\\\"value\\\": 1}}\\n      }\\n    },\\n    {\\n      \\\"type\\\": \\\"text\\\",\\n      \\\"from\\\": {\\\"data\\\": \\\"groups\\\"},\\n      \\\"interactive\\\": false,\\n      \\\"encode\\\": {\\n        \\\"update\\\": {\\n          \\\"x\\\": {\\n            \\\"signal\\\": \\\"scale('x', datum.stack) + (datum.rightLabel ? bandwidth('x') + 8 : -8)\\\"\\n          },\\n          \\\"yc\\\": {\\\"signal\\\": \\\"(datum.scaledY0 + datum.scaledY1)/2\\\"},\\n          \\\"align\\\": {\\\"signal\\\": \\\"datum.rightLabel ? 'left' : 'right'\\\"},\\n          \\\"baseline\\\": {\\\"value\\\": \\\"middle\\\"},\\n          \\\"fontWeight\\\": {\\\"value\\\": \\\"bold\\\"},\\n          \\\"fontSize\\\": {\\\"value\\\": 12},\\n          \\\"text\\\": {\\n            \\\"signal\\\": \\\"abs(datum.scaledY0-datum.scaledY1) > 10 ? datum.grpId : ''\\\"\\n          }\\n        }\\n      }\\n    },\\n    {\\n      \\\"type\\\": \\\"group\\\",\\n      \\\"data\\\": [\\n        {\\n          \\\"name\\\": \\\"dataForShowAll\\\",\\n          \\\"values\\\": [{}],\\n          \\\"transform\\\": [{\\\"type\\\": \\\"filter\\\", \\\"expr\\\": \\\"groupSelector\\\"}]\\n        }\\n      ],\\n      \\\"encode\\\": {\\n        \\\"enter\\\": {\\n          \\\"xc\\\": {\\\"signal\\\": \\\"width/2\\\"},\\n          \\\"y\\\": {\\\"value\\\": 30},\\n          \\\"width\\\": {\\\"value\\\": 100},\\n          \\\"height\\\": {\\\"value\\\": 36}\\n        }\\n      },\\n      \\\"marks\\\": [\\n        {\\n          \\\"type\\\": \\\"group\\\",\\n          \\\"name\\\": \\\"groupReset\\\",\\n          \\\"from\\\": {\\\"data\\\": \\\"dataForShowAll\\\"},\\n          \\\"encode\\\": {\\n            \\\"enter\\\": {\\n              \\\"cornerRadius\\\": {\\\"value\\\": 3.5},\\n              \\\"fill\\\": {\\\"value\\\": \\\"#666666\\\"},\\n              \\\"height\\\": {\\\"field\\\": {\\\"group\\\": \\\"height\\\"}},\\n              \\\"width\\\": {\\\"field\\\": {\\\"group\\\": \\\"width\\\"}}\\n            },\\n            \\\"update\\\": {\\\"opacity\\\": {\\\"value\\\": 1}},\\n            \\\"hover\\\": {\\\"fill\\\": {\\\"value\\\": \\\"#444444\\\"}}\\n          },\\n          \\\"marks\\\": [\\n            {\\n              \\\"type\\\": \\\"text\\\",\\n              \\\"interactive\\\": false,\\n              \\\"encode\\\": {\\n                \\\"enter\\\": {\\n                  \\\"xc\\\": {\\\"field\\\": {\\\"group\\\": \\\"width\\\"}, \\\"mult\\\": 0.5},\\n                  \\\"yc\\\": {\\\"field\\\": {\\\"group\\\": \\\"height\\\"}, \\\"mult\\\": 0.5, \\\"offset\\\": 1},\\n                  \\\"align\\\": {\\\"value\\\": \\\"center\\\"},\\n                  \\\"baseline\\\": {\\\"value\\\": \\\"middle\\\"},\\n                  \\\"text\\\": {\\\"value\\\": \\\"Show All\\\"},\\n                  \\\"fontSize\\\": {\\\"value\\\": 14},\\n                  \\\"stroke\\\": {\\\"value\\\": \\\"#ecf0f1\\\"}\\n                }\\n              }\\n            }\\n          ]\\n        }\\n      ]\\n    }\\n  ],\\n  \\\"signals\\\": [\\n    {\\n      \\\"name\\\": \\\"groupHover\\\",\\n      \\\"value\\\": {},\\n      \\\"on\\\": [\\n        {\\n          \\\"events\\\": \\\"@groupMark:mouseover\\\",\\n          \\\"update\\\": \\\"{stk1:datum.stack=='stk1' && datum.grpId, stk2:datum.stack=='stk2' && datum.grpId}\\\"\\n        },\\n        {\\\"events\\\": \\\"mouseout\\\", \\\"update\\\": \\\"{}\\\"}\\n      ]\\n    },\\n    {\\n      \\\"name\\\": \\\"groupSelector\\\",\\n      \\\"value\\\": false,\\n      \\\"on\\\": [\\n        {\\n          \\\"events\\\": \\\"@groupMark:click!\\\",\\n          \\\"update\\\": \\\"{stack:datum.stack, stk1:datum.stack=='stk1' && datum.grpId, stk2:datum.stack=='stk2' && datum.grpId}\\\"\\n        },\\n        {\\n          \\\"events\\\": [\\n            {\\\"type\\\": \\\"click\\\", \\\"markname\\\": \\\"groupReset\\\"},\\n            {\\\"type\\\": \\\"dblclick\\\"}\\n          ],\\n          \\\"update\\\": \\\"false\\\"\\n        }\\n      ]\\n    }\\n  ]\\n}\"},\"aggs\":[]}",
-      "uiStateJSON": "{}",
-      "description": "",
-      "version": 1,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
-      }
-    },
-    "_migrationVersion": {
-      "visualization": "7.0.1"
-    },
-    "_references": []
-  },
-  {
     "_id": "c14432f0-ecc7-11e9-9a67-834aeb3b3bcc",
     "_type": "visualization",
     "_source": {
@@ -132,24 +114,6 @@
     "_references": []
   },
   {
-    "_id": "c677fb10-eef9-11e9-be19-3751cce751e2",
-    "_type": "visualization",
-    "_source": {
-      "title": "F5_NGINX_PROTECT - WAF - Violation timeline",
-      "visState": "{\"title\":\"F5_NGINX_PROTECT - WAF - Violation timeline\",\"type\":\"metrics\",\"params\":{\"id\":\"61ca57f0-469d-11e7-af02-69e470af7417\",\"type\":\"timeseries\",\"series\":[{\"id\":\"61ca57f1-469d-11e7-af02-69e470af7417\",\"color\":\"#68BC00\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"61ca57f2-469d-11e7-af02-69e470af7417\",\"type\":\"count\"}],\"separate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"terms_field\":\"violations.keyword\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"asm-index-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"axis_scale\":\"normal\",\"show_legend\":1,\"show_grid\":1,\"default_index_pattern\":\"elastiflow-*\"},\"aggs\":[]}",
-      "uiStateJSON": "{}",
-      "description": "",
-      "version": 1,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
-      }
-    },
-    "_migrationVersion": {
-      "visualization": "7.0.1"
-    },
-    "_references": []
-  },
-  {
     "_id": "51b9bce0-efef-11e9-be19-3751cce751e2",
     "_type": "visualization",
     "_source": {
@@ -186,30 +150,6 @@
     "_references": []
   },
   {
-    "_id": "f2bb9ab0-ecce-11e9-a179-0354456f2a91",
-    "_type": "visualization",
-    "_source": {
-      "title": "F5_NGINX_APIGW - APIGW - Health (Bar Chart)",
-      "visState": "{\"title\":\"F5_NGINX_APIGW - APIGW - Health (Bar Chart)\",\"type\":\"histogram\",\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":true,\"valueAxis\":\"ValueAxis-1\"},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Count\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"stacked\",\"data\":{\"label\":\"Count\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"status.keyword\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\"API HTTP Status\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"path.keyword\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\"API Resources\"}}]}",
-      "uiStateJSON": "{}",
-      "description": "",
-      "version": 1,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
-      }
-    },
-    "_migrationVersion": {
-      "visualization": "7.0.1"
-    },
-    "_references": [
-      {
-        "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
-        "type": "index-pattern",
-        "id": "c8ccad80-ed59-11e9-be19-3751cce751e2"
-      }
-    ]
-  },
-  {
     "_id": "0e14bb00-5ee9-11e7-b1f2-f1590ba84147",
     "_type": "visualization",
     "_source": {
@@ -230,30 +170,6 @@
         "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
         "type": "index-pattern",
         "id": "9efd77c0-a950-11e9-9a67-834aeb3b3bcc"
-      }
-    ]
-  },
-  {
-    "_id": "ddaa8680-ecca-11e9-9a67-834aeb3b3bcc",
-    "_type": "visualization",
-    "_source": {
-      "title": "F5_NGINX_APIGW - APIGW - Definition Name",
-      "visState": "{\"title\":\"F5_NGINX_APIGW - APIGW - Definition Name\",\"type\":\"pie\",\"params\":{\"type\":\"pie\",\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":true,\"labels\":{\"show\":false,\"values\":true,\"last_level\":true,\"truncate\":100}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"apim_def_name.keyword\",\"size\":500,\"order\":\"desc\",\"orderBy\":\"1\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\"}}]}",
-      "uiStateJSON": "{}",
-      "description": "",
-      "version": 1,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
-      }
-    },
-    "_migrationVersion": {
-      "visualization": "7.0.1"
-    },
-    "_references": [
-      {
-        "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
-        "type": "index-pattern",
-        "id": "c8ccad80-ed59-11e9-be19-3751cce751e2"
       }
     ]
   },
@@ -302,30 +218,6 @@
         "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
         "type": "index-pattern",
         "id": "c23ee9e0-ec07-11e9-9a67-834aeb3b3bcc"
-      }
-    ]
-  },
-  {
-    "_id": "55fa04e0-ec9d-11e9-9a67-834aeb3b3bcc",
-    "_type": "visualization",
-    "_source": {
-      "title": "F5_NGINX_APIGW - APIGW - Client",
-      "visState": "{\"title\":\"F5_NGINX_APIGW - APIGW - Client\",\"type\":\"pie\",\"params\":{\"type\":\"pie\",\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":true,\"labels\":{\"show\":false,\"values\":true,\"last_level\":true,\"truncate\":100}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"remote.keyword\",\"size\":500,\"order\":\"desc\",\"orderBy\":\"1\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\"}}]}",
-      "uiStateJSON": "{}",
-      "description": "",
-      "version": 1,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
-      }
-    },
-    "_migrationVersion": {
-      "visualization": "7.0.1"
-    },
-    "_references": [
-      {
-        "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
-        "type": "index-pattern",
-        "id": "c8ccad80-ed59-11e9-be19-3751cce751e2"
       }
     ]
   },
@@ -384,16 +276,16 @@
     "_references": []
   },
   {
-    "_id": "9fc162e0-ecce-11e9-a179-0354456f2a91",
+    "_id": "f2bb9ab0-ecce-11e9-a179-0354456f2a91",
     "_type": "visualization",
     "_source": {
-      "title": "F5_NGINX_APIGW - APIGW - Resource Health (Status Code)",
-      "visState": "{\"title\":\"F5_NGINX_APIGW - APIGW - Resource Health (Status Code)\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMetricsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"path.keyword\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\"API Resources\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"status.keyword\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\"Status Code\"}}]}",
-      "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+      "title": "F5_NGINX_APIGW - APIGW - Health (Bar Chart)",
+      "visState": "{\n  \"title\": \"F5_NGINX_APIGW - APIGW - Health (Bar Chart)\",\n  \"type\": \"histogram\",\n  \"params\": {\n    \"type\": \"histogram\",\n    \"grid\": {\n      \"categoryLines\": true,\n      \"valueAxis\": \"ValueAxis-1\"\n    },\n    \"categoryAxes\": [\n      {\n        \"id\": \"CategoryAxis-1\",\n        \"type\": \"category\",\n        \"position\": \"bottom\",\n        \"show\": true,\n        \"style\": {},\n        \"scale\": {\n          \"type\": \"linear\"\n        },\n        \"labels\": {\n          \"show\": true,\n          \"truncate\": 100\n        },\n        \"title\": {}\n      }\n    ],\n    \"valueAxes\": [\n      {\n        \"id\": \"ValueAxis-1\",\n        \"name\": \"LeftAxis-1\",\n        \"type\": \"value\",\n        \"position\": \"left\",\n        \"show\": true,\n        \"style\": {},\n        \"scale\": {\n          \"type\": \"linear\",\n          \"mode\": \"normal\"\n        },\n        \"labels\": {\n          \"show\": true,\n          \"rotate\": 0,\n          \"filter\": false,\n          \"truncate\": 100\n        },\n        \"title\": {\n          \"text\": \"Count\"\n        }\n      }\n    ],\n    \"seriesParams\": [\n      {\n        \"show\": \"true\",\n        \"type\": \"histogram\",\n        \"mode\": \"stacked\",\n        \"data\": {\n          \"label\": \"Count\",\n          \"id\": \"1\"\n        },\n        \"valueAxis\": \"ValueAxis-1\",\n        \"drawLinesBetweenPoints\": true,\n        \"showCircles\": true\n      }\n    ],\n    \"addTooltip\": true,\n    \"addLegend\": true,\n    \"legendPosition\": \"right\",\n    \"times\": [],\n    \"addTimeMarker\": false\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"enabled\": true,\n      \"type\": \"count\",\n      \"schema\": \"metric\",\n      \"params\": {}\n    },\n    {\n      \"id\": \"2\",\n      \"enabled\": true,\n      \"type\": \"terms\",\n      \"schema\": \"segment\",\n      \"params\": {\n        \"field\": \"status.keyword\",\n        \"size\": 5,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\",\n        \"otherBucket\": false,\n        \"otherBucketLabel\": \"Other\",\n        \"missingBucket\": false,\n        \"missingBucketLabel\": \"Missing\",\n        \"customLabel\": \"API HTTP Status\"\n      }\n    },\n    {\n      \"id\": \"3\",\n      \"enabled\": true,\n      \"type\": \"terms\",\n      \"schema\": \"group\",\n      \"params\": {\n        \"field\": \"path.keyword\",\n        \"size\": 5,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\",\n        \"otherBucket\": false,\n        \"otherBucketLabel\": \"Other\",\n        \"missingBucket\": false,\n        \"missingBucketLabel\": \"Missing\",\n        \"customLabel\": \"API Resources\"\n      }\n    }\n  ]\n}",
+      "uiStateJSON": "{}",
       "description": "",
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+        "searchSourceJSON": "{\n  \"query\": {\n    \"query\": \"\",\n    \"language\": \"kuery\"\n  },\n  \"filter\": [],\n  \"indexRefName\": \"kibanaSavedObjectMeta.searchSourceJSON.index\"\n}"
       }
     },
     "_migrationVersion": {
@@ -402,8 +294,32 @@
     "_references": [
       {
         "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
-        "type": "index-pattern",
-        "id": "c8ccad80-ed59-11e9-be19-3751cce751e2"
+        "id": "4f3ad880-f866-11e9-b776-f1a09d2d8332",
+        "type": "index-pattern"
+      }
+    ]
+  },
+  {
+    "_id": "9fc162e0-ecce-11e9-a179-0354456f2a91",
+    "_type": "visualization",
+    "_source": {
+      "title": "F5_NGINX_APIGW - APIGW - Resource Health (Status Code)",
+      "visState": "{\n  \"title\": \"F5_NGINX_APIGW - APIGW - Resource Health (Status Code)\",\n  \"type\": \"table\",\n  \"params\": {\n    \"perPage\": 10,\n    \"showPartialRows\": false,\n    \"showMetricsAtAllLevels\": false,\n    \"sort\": {\n      \"columnIndex\": null,\n      \"direction\": null\n    },\n    \"showTotal\": false,\n    \"totalFunc\": \"sum\"\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"enabled\": true,\n      \"type\": \"count\",\n      \"schema\": \"metric\",\n      \"params\": {}\n    },\n    {\n      \"id\": \"2\",\n      \"enabled\": true,\n      \"type\": \"terms\",\n      \"schema\": \"bucket\",\n      \"params\": {\n        \"field\": \"path.keyword\",\n        \"size\": 5,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\",\n        \"otherBucket\": false,\n        \"otherBucketLabel\": \"Other\",\n        \"missingBucket\": false,\n        \"missingBucketLabel\": \"Missing\",\n        \"customLabel\": \"API Resources\"\n      }\n    },\n    {\n      \"id\": \"3\",\n      \"enabled\": true,\n      \"type\": \"terms\",\n      \"schema\": \"bucket\",\n      \"params\": {\n        \"field\": \"status.keyword\",\n        \"size\": 5,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\",\n        \"otherBucket\": false,\n        \"otherBucketLabel\": \"Other\",\n        \"missingBucket\": false,\n        \"missingBucketLabel\": \"Missing\",\n        \"customLabel\": \"Status Code\"\n      }\n    }\n  ]\n}",
+      "uiStateJSON": "{\n  \"vis\": {\n    \"params\": {\n      \"sort\": {\n        \"columnIndex\": null,\n        \"direction\": null\n      }\n    }\n  }\n}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\n  \"query\": {\n    \"query\": \"\",\n    \"language\": \"kuery\"\n  },\n  \"filter\": [],\n  \"indexRefName\": \"kibanaSavedObjectMeta.searchSourceJSON.index\"\n}"
+      }
+    },
+    "_migrationVersion": {
+      "visualization": "7.0.1"
+    },
+    "_references": [
+      {
+        "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+        "id": "4f3ad880-f866-11e9-b776-f1a09d2d8332",
+        "type": "index-pattern"
       }
     ]
   },
@@ -412,12 +328,12 @@
     "_type": "visualization",
     "_source": {
       "title": "F5_NGINX_APIGW - APIGW - Env Resources",
-      "visState": "{\"title\":\"F5_NGINX_APIGW - APIGW - Env Resources\",\"type\":\"pie\",\"params\":{\"type\":\"pie\",\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":true,\"labels\":{\"show\":false,\"values\":true,\"last_level\":true,\"truncate\":100}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"path.keyword\",\"size\":500,\"order\":\"desc\",\"orderBy\":\"1\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"apim_env_name.keyword\",\"size\":500,\"order\":\"desc\",\"orderBy\":\"1\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\"}}]}",
+      "visState": "{\n  \"title\": \"F5_NGINX_APIGW - APIGW - Env Resources\",\n  \"type\": \"pie\",\n  \"params\": {\n    \"type\": \"pie\",\n    \"addTooltip\": true,\n    \"addLegend\": true,\n    \"legendPosition\": \"right\",\n    \"isDonut\": true,\n    \"labels\": {\n      \"show\": false,\n      \"values\": true,\n      \"last_level\": true,\n      \"truncate\": 100\n    }\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"enabled\": true,\n      \"type\": \"count\",\n      \"schema\": \"metric\",\n      \"params\": {}\n    },\n    {\n      \"id\": \"2\",\n      \"enabled\": true,\n      \"type\": \"terms\",\n      \"schema\": \"segment\",\n      \"params\": {\n        \"field\": \"path.keyword\",\n        \"size\": 500,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\",\n        \"otherBucket\": false,\n        \"otherBucketLabel\": \"Other\",\n        \"missingBucket\": false,\n        \"missingBucketLabel\": \"Missing\"\n      }\n    },\n    {\n      \"id\": \"3\",\n      \"enabled\": true,\n      \"type\": \"terms\",\n      \"schema\": \"segment\",\n      \"params\": {\n        \"field\": \"apim_env_name.keyword\",\n        \"size\": 500,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\",\n        \"otherBucket\": false,\n        \"otherBucketLabel\": \"Other\",\n        \"missingBucket\": false,\n        \"missingBucketLabel\": \"Missing\"\n      }\n    }\n  ]\n}",
       "uiStateJSON": "{}",
       "description": "",
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+        "searchSourceJSON": "{\n  \"query\": {\n    \"query\": \"\",\n    \"language\": \"kuery\"\n  },\n  \"filter\": [],\n  \"indexRefName\": \"kibanaSavedObjectMeta.searchSourceJSON.index\"\n}"
       }
     },
     "_migrationVersion": {
@@ -426,22 +342,22 @@
     "_references": [
       {
         "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
-        "type": "index-pattern",
-        "id": "c8ccad80-ed59-11e9-be19-3751cce751e2"
+        "id": "4f3ad880-f866-11e9-b776-f1a09d2d8332",
+        "type": "index-pattern"
       }
     ]
   },
   {
-    "_id": "56e85ee0-ecd1-11e9-a179-0354456f2a91",
+    "_id": "ddaa8680-ecca-11e9-9a67-834aeb3b3bcc",
     "_type": "visualization",
     "_source": {
-      "title": "F5_NGINX_APIGW - APIGW - Unique Client",
-      "visState": "{\"title\":\"F5_NGINX_APIGW - APIGW - Unique Client\",\"type\":\"metric\",\"params\":{\"addTooltip\":true,\"addLegend\":false,\"type\":\"metric\",\"metric\":{\"percentageMode\":false,\"useRanges\":false,\"colorSchema\":\"Green to Red\",\"metricColorMode\":\"None\",\"colorsRange\":[{\"from\":0,\"to\":10000}],\"labels\":{\"show\":true},\"invertColors\":false,\"style\":{\"bgFill\":\"#000\",\"bgColor\":false,\"labelColor\":false,\"subText\":\"\",\"fontSize\":60}}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"cardinality\",\"schema\":\"metric\",\"params\":{\"field\":\"remote.keyword\",\"customLabel\":\"Client\"}}]}",
+      "title": "F5_NGINX_APIGW - APIGW - Definition Name",
+      "visState": "{\n  \"title\": \"F5_NGINX_APIGW - APIGW - Definition Name\",\n  \"type\": \"pie\",\n  \"params\": {\n    \"type\": \"pie\",\n    \"addTooltip\": true,\n    \"addLegend\": true,\n    \"legendPosition\": \"right\",\n    \"isDonut\": true,\n    \"labels\": {\n      \"show\": false,\n      \"values\": true,\n      \"last_level\": true,\n      \"truncate\": 100\n    }\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"enabled\": true,\n      \"type\": \"count\",\n      \"schema\": \"metric\",\n      \"params\": {}\n    },\n    {\n      \"id\": \"2\",\n      \"enabled\": true,\n      \"type\": \"terms\",\n      \"schema\": \"segment\",\n      \"params\": {\n        \"field\": \"apim_def_name.keyword\",\n        \"size\": 500,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\",\n        \"otherBucket\": false,\n        \"otherBucketLabel\": \"Other\",\n        \"missingBucket\": false,\n        \"missingBucketLabel\": \"Missing\"\n      }\n    }\n  ]\n}",
       "uiStateJSON": "{}",
       "description": "",
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+        "searchSourceJSON": "{\n  \"query\": {\n    \"query\": \"\",\n    \"language\": \"kuery\"\n  },\n  \"filter\": [],\n  \"indexRefName\": \"kibanaSavedObjectMeta.searchSourceJSON.index\"\n}"
       }
     },
     "_migrationVersion": {
@@ -450,8 +366,8 @@
     "_references": [
       {
         "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
-        "type": "index-pattern",
-        "id": "c8ccad80-ed59-11e9-be19-3751cce751e2"
+        "id": "4f3ad880-f866-11e9-b776-f1a09d2d8332",
+        "type": "index-pattern"
       }
     ]
   },
@@ -460,7 +376,97 @@
     "_type": "visualization",
     "_source": {
       "title": "F5_NGINX_APIGW - APIGW - Top Method (PIE)",
-      "visState": "{\"title\":\"F5_NGINX_APIGW - APIGW - Top Method (PIE)\",\"type\":\"pie\",\"params\":{\"type\":\"pie\",\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":true,\"labels\":{\"show\":false,\"values\":true,\"last_level\":true,\"truncate\":100}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"status.keyword\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\"}}]}",
+      "visState": "{\n  \"title\": \"F5_NGINX_APIGW - APIGW - Top Method (PIE)\",\n  \"type\": \"pie\",\n  \"params\": {\n    \"type\": \"pie\",\n    \"addTooltip\": true,\n    \"addLegend\": true,\n    \"legendPosition\": \"right\",\n    \"isDonut\": true,\n    \"labels\": {\n      \"show\": false,\n      \"values\": true,\n      \"last_level\": true,\n      \"truncate\": 100\n    }\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"enabled\": true,\n      \"type\": \"count\",\n      \"schema\": \"metric\",\n      \"params\": {}\n    },\n    {\n      \"id\": \"2\",\n      \"enabled\": true,\n      \"type\": \"terms\",\n      \"schema\": \"segment\",\n      \"params\": {\n        \"field\": \"status.keyword\",\n        \"size\": 5,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\",\n        \"otherBucket\": false,\n        \"otherBucketLabel\": \"Other\",\n        \"missingBucket\": false,\n        \"missingBucketLabel\": \"Missing\"\n      }\n    }\n  ]\n}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\n  \"query\": {\n    \"query\": \"\",\n    \"language\": \"kuery\"\n  },\n  \"filter\": [],\n  \"indexRefName\": \"kibanaSavedObjectMeta.searchSourceJSON.index\"\n}"
+      }
+    },
+    "_migrationVersion": {
+      "visualization": "7.0.1"
+    },
+    "_references": [
+      {
+        "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+        "id": "4f3ad880-f866-11e9-b776-f1a09d2d8332",
+        "type": "index-pattern"
+      }
+    ]
+  },
+  {
+    "_id": "55fa04e0-ec9d-11e9-9a67-834aeb3b3bcc",
+    "_type": "visualization",
+    "_source": {
+      "title": "F5_NGINX_APIGW - APIGW - Client",
+      "visState": "{\n  \"title\": \"F5_NGINX_APIGW - APIGW - Client\",\n  \"type\": \"pie\",\n  \"params\": {\n    \"type\": \"pie\",\n    \"addTooltip\": true,\n    \"addLegend\": true,\n    \"legendPosition\": \"right\",\n    \"isDonut\": true,\n    \"labels\": {\n      \"show\": false,\n      \"values\": true,\n      \"last_level\": true,\n      \"truncate\": 100\n    }\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"enabled\": true,\n      \"type\": \"count\",\n      \"schema\": \"metric\",\n      \"params\": {}\n    },\n    {\n      \"id\": \"2\",\n      \"enabled\": true,\n      \"type\": \"terms\",\n      \"schema\": \"segment\",\n      \"params\": {\n        \"field\": \"remote.keyword\",\n        \"size\": 500,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\",\n        \"otherBucket\": false,\n        \"otherBucketLabel\": \"Other\",\n        \"missingBucket\": false,\n        \"missingBucketLabel\": \"Missing\"\n      }\n    }\n  ]\n}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\n  \"query\": {\n    \"query\": \"\",\n    \"language\": \"kuery\"\n  },\n  \"filter\": [],\n  \"indexRefName\": \"kibanaSavedObjectMeta.searchSourceJSON.index\"\n}"
+      }
+    },
+    "_migrationVersion": {
+      "visualization": "7.0.1"
+    },
+    "_references": [
+      {
+        "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+        "id": "4f3ad880-f866-11e9-b776-f1a09d2d8332",
+        "type": "index-pattern"
+      }
+    ]
+  },
+  {
+    "_id": "56e85ee0-ecd1-11e9-a179-0354456f2a91",
+    "_type": "visualization",
+    "_source": {
+      "title": "F5_NGINX_APIGW - APIGW - Unique Client",
+      "visState": "{\n  \"title\": \"F5_NGINX_APIGW - APIGW - Unique Client\",\n  \"type\": \"metric\",\n  \"params\": {\n    \"addTooltip\": true,\n    \"addLegend\": false,\n    \"type\": \"metric\",\n    \"metric\": {\n      \"percentageMode\": false,\n      \"useRanges\": false,\n      \"colorSchema\": \"Green to Red\",\n      \"metricColorMode\": \"None\",\n      \"colorsRange\": [\n        {\n          \"from\": 0,\n          \"to\": 10000\n        }\n      ],\n      \"labels\": {\n        \"show\": true\n      },\n      \"invertColors\": false,\n      \"style\": {\n        \"bgFill\": \"#000\",\n        \"bgColor\": false,\n        \"labelColor\": false,\n        \"subText\": \"\",\n        \"fontSize\": 60\n      }\n    }\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"enabled\": true,\n      \"type\": \"cardinality\",\n      \"schema\": \"metric\",\n      \"params\": {\n        \"field\": \"remote.keyword\",\n        \"customLabel\": \"Client\"\n      }\n    }\n  ]\n}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\n  \"query\": {\n    \"query\": \"\",\n    \"language\": \"kuery\"\n  },\n  \"filter\": [],\n  \"indexRefName\": \"kibanaSavedObjectMeta.searchSourceJSON.index\"\n}"
+      }
+    },
+    "_migrationVersion": {
+      "visualization": "7.0.1"
+    },
+    "_references": [
+      {
+        "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+        "id": "4f3ad880-f866-11e9-b776-f1a09d2d8332",
+        "type": "index-pattern"
+      }
+    ]
+  },
+  {
+    "_id": "65a9dbe0-f963-11e9-b776-f1a09d2d8332",
+    "_type": "visualization",
+    "_source": {
+      "title": "F5_NGINX_SIDECAR - Flow Diagram",
+      "visState": "{\"title\":\"F5_NGINX_SIDECAR - Flow Diagram\",\"type\":\"vega\",\"params\":{\"spec\":\"{\\n  \\\"$schema\\\": \\\"https://vega.github.io/schema/vega/v3.0.json\\\",\\n  \\\"data\\\": [\\n    {\\n      \\\"name\\\": \\\"rawData\\\",\\n      \\\"url\\\": {\\n        \\\"%context%\\\": true,\\n        \\\"%timefield%\\\": \\\"@timestamp\\\",\\n        \\\"index\\\": \\\"nginxp-sidecar-*\\\",\\n        \\\"body\\\": {\\n          \\\"size\\\": 0,\\n          \\\"aggs\\\": {\\n            \\\"table\\\": {\\n              \\\"composite\\\": {\\n                \\\"size\\\": 1000,\\n                \\\"sources\\\": [\\n                  {\\\"stk1\\\": {\\\"terms\\\": {\\\"field\\\": \\\"remote_addr.keyword\\\"}}},\\n                  {\\\"stk2\\\": {\\\"terms\\\": {\\\"field\\\": \\\"hostname.keyword\\\"}}}\\n                ]\\n              }\\n            }\\n          }\\n        }\\n      },\\n      \\\"format\\\": {\\\"property\\\": \\\"aggregations.table.buckets\\\"},\\n      \\\"transform\\\": [\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.key.stk1\\\", \\\"as\\\": \\\"stk1\\\"},\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.key.stk2\\\", \\\"as\\\": \\\"stk2\\\"},\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.doc_count\\\", \\\"as\\\": \\\"size\\\"}\\n      ]\\n    },\\n    {\\n      \\\"name\\\": \\\"nodes\\\",\\n      \\\"source\\\": \\\"rawData\\\",\\n      \\\"transform\\\": [\\n        {\\n          \\\"type\\\": \\\"filter\\\",\\n          \\\"expr\\\": \\\"!groupSelector || groupSelector.stk1 == datum.stk1 || groupSelector.stk2 == datum.stk2\\\"\\n        },\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.stk1+datum.stk2\\\", \\\"as\\\": \\\"key\\\"},\\n        {\\\"type\\\": \\\"fold\\\", \\\"fields\\\": [\\\"stk1\\\", \\\"stk2\\\"], \\\"as\\\": [\\\"stack\\\", \\\"grpId\\\"]},\\n        {\\n          \\\"type\\\": \\\"formula\\\",\\n          \\\"expr\\\": \\\"datum.stack == 'stk1' ? datum.stk1+datum.stk2 : datum.stk2+datum.stk1\\\",\\n          \\\"as\\\": \\\"sortField\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"stack\\\",\\n          \\\"groupby\\\": [\\\"stack\\\"],\\n          \\\"sort\\\": {\\\"field\\\": \\\"sortField\\\", \\\"order\\\": \\\"descending\\\"},\\n          \\\"field\\\": \\\"size\\\"\\n        },\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"(datum.y0+datum.y1)/2\\\", \\\"as\\\": \\\"yc\\\"}\\n      ]\\n    },\\n    {\\n      \\\"name\\\": \\\"groups\\\",\\n      \\\"source\\\": \\\"nodes\\\",\\n      \\\"transform\\\": [\\n        {\\n          \\\"type\\\": \\\"aggregate\\\",\\n          \\\"groupby\\\": [\\\"stack\\\", \\\"grpId\\\"],\\n          \\\"fields\\\": [\\\"size\\\"],\\n          \\\"ops\\\": [\\\"sum\\\"],\\n          \\\"as\\\": [\\\"total\\\"]\\n        },\\n        {\\n          \\\"type\\\": \\\"stack\\\",\\n          \\\"groupby\\\": [\\\"stack\\\"],\\n          \\\"sort\\\": {\\\"field\\\": \\\"grpId\\\", \\\"order\\\": \\\"descending\\\"},\\n          \\\"field\\\": \\\"total\\\"\\n        },\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"scale('y', datum.y0)\\\", \\\"as\\\": \\\"scaledY0\\\"},\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"scale('y', datum.y1)\\\", \\\"as\\\": \\\"scaledY1\\\"},\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.stack == 'stk1'\\\", \\\"as\\\": \\\"rightLabel\\\"},\\n        {\\n          \\\"type\\\": \\\"formula\\\",\\n          \\\"expr\\\": \\\"datum.total/domain('y')[1]\\\",\\n          \\\"as\\\": \\\"percentage\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"name\\\": \\\"destinationNodes\\\",\\n      \\\"source\\\": \\\"nodes\\\",\\n      \\\"transform\\\": [{\\\"type\\\": \\\"filter\\\", \\\"expr\\\": \\\"datum.stack == 'stk2'\\\"}]\\n    },\\n    {\\n      \\\"name\\\": \\\"edges\\\",\\n      \\\"source\\\": \\\"nodes\\\",\\n      \\\"transform\\\": [\\n        {\\\"type\\\": \\\"filter\\\", \\\"expr\\\": \\\"datum.stack == 'stk1'\\\"},\\n        {\\n          \\\"type\\\": \\\"lookup\\\",\\n          \\\"from\\\": \\\"destinationNodes\\\",\\n          \\\"key\\\": \\\"key\\\",\\n          \\\"fields\\\": [\\\"key\\\"],\\n          \\\"as\\\": [\\\"target\\\"]\\n        },\\n        {\\n          \\\"type\\\": \\\"linkpath\\\",\\n          \\\"orient\\\": \\\"horizontal\\\",\\n          \\\"shape\\\": \\\"diagonal\\\",\\n          \\\"sourceY\\\": {\\\"expr\\\": \\\"scale('y', datum.yc)\\\"},\\n          \\\"sourceX\\\": {\\\"expr\\\": \\\"scale('x', 'stk1') + bandwidth('x')\\\"},\\n          \\\"targetY\\\": {\\\"expr\\\": \\\"scale('y', datum.target.yc)\\\"},\\n          \\\"targetX\\\": {\\\"expr\\\": \\\"scale('x', 'stk2')\\\"}\\n        },\\n        {\\n          \\\"type\\\": \\\"formula\\\",\\n          \\\"expr\\\": \\\"range('y')[0]-scale('y', datum.size)\\\",\\n          \\\"as\\\": \\\"strokeWidth\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"formula\\\",\\n          \\\"expr\\\": \\\"datum.size/domain('y')[1]\\\",\\n          \\\"as\\\": \\\"percentage\\\"\\n        }\\n      ]\\n    }\\n  ],\\n  \\\"scales\\\": [\\n    {\\n      \\\"name\\\": \\\"x\\\",\\n      \\\"type\\\": \\\"band\\\",\\n      \\\"range\\\": \\\"width\\\",\\n      \\\"domain\\\": [\\\"stk1\\\", \\\"stk2\\\"],\\n      \\\"paddingOuter\\\": 0.01,\\n      \\\"paddingInner\\\": 0.98\\n    },\\n    {\\n      \\\"name\\\": \\\"y\\\",\\n      \\\"type\\\": \\\"linear\\\",\\n      \\\"range\\\": \\\"height\\\",\\n      \\\"domain\\\": {\\\"data\\\": \\\"nodes\\\", \\\"field\\\": \\\"y1\\\"}\\n    },\\n    {\\n      \\\"name\\\": \\\"color\\\",\\n      \\\"type\\\": \\\"ordinal\\\",\\n      \\\"range\\\": \\\"category\\\",\\n      \\\"domain\\\": {\\\"data\\\": \\\"rawData\\\", \\\"fields\\\": [\\\"stk1\\\",\\\"stk2\\\"]}\\n    },\\n    {\\n      \\\"name\\\": \\\"stackNames\\\",\\n      \\\"type\\\": \\\"ordinal\\\",\\n      \\\"range\\\": [\\\"API\\\", \\\"Attacks Vector\\\"],\\n      \\\"domain\\\": [\\\"stk1\\\", \\\"stk2\\\"]\\n    }\\n  ],\\n  \\\"axes\\\": [\\n    {\\n      \\\"orient\\\": \\\"bottom\\\",\\n      \\\"scale\\\": \\\"x\\\",\\n      \\\"encode\\\": {\\n        \\\"labels\\\": {\\n          \\\"update\\\": {\\n            \\\"text\\\": {\\\"scale\\\": \\\"stackNames\\\", \\\"field\\\": \\\"value\\\"},\\n            \\\"fontSize\\\": {\\\"value\\\": 14}\\n          }\\n        }\\n      }\\n    },\\n    {\\n      \\\"orient\\\": \\\"left\\\",\\n      \\\"scale\\\": \\\"y\\\",\\n      \\\"encode\\\": {\\\"labels\\\": {\\\"update\\\": {\\\"fontSize\\\": {\\\"value\\\": 12}}}}\\n    }\\n  ],\\n  \\\"marks\\\": [\\n    {\\n      \\\"type\\\": \\\"path\\\",\\n      \\\"name\\\": \\\"edgeMark\\\",\\n      \\\"from\\\": {\\\"data\\\": \\\"edges\\\"},\\n      \\\"clip\\\": true,\\n      \\\"encode\\\": {\\n        \\\"update\\\": {\\n          \\\"stroke\\\": [\\n            {\\n              \\\"test\\\": \\\"groupSelector && groupSelector.stack=='stk1'\\\",\\n              \\\"scale\\\": \\\"color\\\",\\n              \\\"field\\\": \\\"stk2\\\"\\n            },\\n            {\\\"scale\\\": \\\"color\\\", \\\"field\\\": \\\"stk1\\\"}\\n          ],\\n          \\\"strokeWidth\\\": {\\\"field\\\": \\\"strokeWidth\\\"},\\n          \\\"path\\\": {\\\"field\\\": \\\"path\\\"},\\n          \\\"strokeOpacity\\\": {\\n            \\\"signal\\\": \\\"!groupSelector && (groupHover.stk1 == datum.stk1 || groupHover.stk2 == datum.stk2) ? 0.75 : 0.3\\\"\\n          },\\n          \\\"zindex\\\": {\\n            \\\"signal\\\": \\\"!groupSelector && (groupHover.stk1 == datum.stk1 || groupHover.stk2 == datum.stk2) ? 1 : 0\\\"\\n          },\\n          \\\"tooltip\\\": {\\n            \\\"signal\\\": \\\"datum.stk1 + ' → ' + datum.stk2 + '    ' + format(datum.size, ',.0f') + '   (' + format(datum.percentage, '.1%') + ')'\\\"\\n          }\\n        },\\n        \\\"hover\\\": {\\\"strokeOpacity\\\": {\\\"value\\\": 0.75}}\\n      }\\n    },\\n    {\\n      \\\"type\\\": \\\"rect\\\",\\n      \\\"name\\\": \\\"groupMark\\\",\\n      \\\"from\\\": {\\\"data\\\": \\\"groups\\\"},\\n      \\\"encode\\\": {\\n        \\\"enter\\\": {\\n          \\\"fill\\\": {\\\"scale\\\": \\\"color\\\", \\\"field\\\": \\\"grpId\\\"},\\n          \\\"width\\\": {\\\"scale\\\": \\\"x\\\", \\\"band\\\": 1}\\n        },\\n        \\\"update\\\": {\\n          \\\"x\\\": {\\\"scale\\\": \\\"x\\\", \\\"field\\\": \\\"stack\\\"},\\n          \\\"y\\\": {\\\"field\\\": \\\"scaledY0\\\"},\\n          \\\"y2\\\": {\\\"field\\\": \\\"scaledY1\\\"},\\n          \\\"fillOpacity\\\": {\\\"value\\\": 0.7},\\n          \\\"tooltip\\\": {\\n            \\\"signal\\\": \\\"datum.grpId + '   ' + format(datum.total, ',.0f') + '   (' + format(datum.percentage, '.1%') + ')'\\\"\\n          }\\n        },\\n        \\\"hover\\\": {\\\"fillOpacity\\\": {\\\"value\\\": 1}}\\n      }\\n    },\\n    {\\n      \\\"type\\\": \\\"text\\\",\\n      \\\"from\\\": {\\\"data\\\": \\\"groups\\\"},\\n      \\\"interactive\\\": false,\\n      \\\"encode\\\": {\\n        \\\"update\\\": {\\n          \\\"x\\\": {\\n            \\\"signal\\\": \\\"scale('x', datum.stack) + (datum.rightLabel ? bandwidth('x') + 8 : -8)\\\"\\n          },\\n          \\\"yc\\\": {\\\"signal\\\": \\\"(datum.scaledY0 + datum.scaledY1)/2\\\"},\\n          \\\"align\\\": {\\\"signal\\\": \\\"datum.rightLabel ? 'left' : 'right'\\\"},\\n          \\\"baseline\\\": {\\\"value\\\": \\\"middle\\\"},\\n          \\\"fontWeight\\\": {\\\"value\\\": \\\"bold\\\"},\\n          \\\"fontSize\\\": {\\\"value\\\": 12},\\n          \\\"text\\\": {\\n            \\\"signal\\\": \\\"abs(datum.scaledY0-datum.scaledY1) > 10 ? datum.grpId : ''\\\"\\n          }\\n        }\\n      }\\n    },\\n    {\\n      \\\"type\\\": \\\"group\\\",\\n      \\\"data\\\": [\\n        {\\n          \\\"name\\\": \\\"dataForShowAll\\\",\\n          \\\"values\\\": [{}],\\n          \\\"transform\\\": [{\\\"type\\\": \\\"filter\\\", \\\"expr\\\": \\\"groupSelector\\\"}]\\n        }\\n      ],\\n      \\\"encode\\\": {\\n        \\\"enter\\\": {\\n          \\\"xc\\\": {\\\"signal\\\": \\\"width/2\\\"},\\n          \\\"y\\\": {\\\"value\\\": 30},\\n          \\\"width\\\": {\\\"value\\\": 100},\\n          \\\"height\\\": {\\\"value\\\": 36}\\n        }\\n      },\\n      \\\"marks\\\": [\\n        {\\n          \\\"type\\\": \\\"group\\\",\\n          \\\"name\\\": \\\"groupReset\\\",\\n          \\\"from\\\": {\\\"data\\\": \\\"dataForShowAll\\\"},\\n          \\\"encode\\\": {\\n            \\\"enter\\\": {\\n              \\\"cornerRadius\\\": {\\\"value\\\": 3.5},\\n              \\\"fill\\\": {\\\"value\\\": \\\"#666666\\\"},\\n              \\\"height\\\": {\\\"field\\\": {\\\"group\\\": \\\"height\\\"}},\\n              \\\"width\\\": {\\\"field\\\": {\\\"group\\\": \\\"width\\\"}}\\n            },\\n            \\\"update\\\": {\\\"opacity\\\": {\\\"value\\\": 1}},\\n            \\\"hover\\\": {\\\"fill\\\": {\\\"value\\\": \\\"#444444\\\"}}\\n          },\\n          \\\"marks\\\": [\\n            {\\n              \\\"type\\\": \\\"text\\\",\\n              \\\"interactive\\\": false,\\n              \\\"encode\\\": {\\n                \\\"enter\\\": {\\n                  \\\"xc\\\": {\\\"field\\\": {\\\"group\\\": \\\"width\\\"}, \\\"mult\\\": 0.5},\\n                  \\\"yc\\\": {\\\"field\\\": {\\\"group\\\": \\\"height\\\"}, \\\"mult\\\": 0.5, \\\"offset\\\": 1},\\n                  \\\"align\\\": {\\\"value\\\": \\\"center\\\"},\\n                  \\\"baseline\\\": {\\\"value\\\": \\\"middle\\\"},\\n                  \\\"text\\\": {\\\"value\\\": \\\"Show All\\\"},\\n                  \\\"fontSize\\\": {\\\"value\\\": 14},\\n                  \\\"stroke\\\": {\\\"value\\\": \\\"#ecf0f1\\\"}\\n                }\\n              }\\n            }\\n          ]\\n        }\\n      ]\\n    }\\n  ],\\n  \\\"signals\\\": [\\n    {\\n      \\\"name\\\": \\\"groupHover\\\",\\n      \\\"value\\\": {},\\n      \\\"on\\\": [\\n        {\\n          \\\"events\\\": \\\"@groupMark:mouseover\\\",\\n          \\\"update\\\": \\\"{stk1:datum.stack=='stk1' && datum.grpId, stk2:datum.stack=='stk2' && datum.grpId}\\\"\\n        },\\n        {\\\"events\\\": \\\"mouseout\\\", \\\"update\\\": \\\"{}\\\"}\\n      ]\\n    },\\n    {\\n      \\\"name\\\": \\\"groupSelector\\\",\\n      \\\"value\\\": false,\\n      \\\"on\\\": [\\n        {\\n          \\\"events\\\": \\\"@groupMark:click!\\\",\\n          \\\"update\\\": \\\"{stack:datum.stack, stk1:datum.stack=='stk1' && datum.grpId, stk2:datum.stack=='stk2' && datum.grpId}\\\"\\n        },\\n        {\\n          \\\"events\\\": [\\n            {\\\"type\\\": \\\"click\\\", \\\"markname\\\": \\\"groupReset\\\"},\\n            {\\\"type\\\": \\\"dblclick\\\"}\\n          ],\\n          \\\"update\\\": \\\"false\\\"\\n        }\\n      ]\\n    }\\n  ]\\n}\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
+      }
+    },
+    "_migrationVersion": {
+      "visualization": "7.0.1"
+    },
+    "_references": []
+  },
+  {
+    "_id": "4f6a5270-f962-11e9-b776-f1a09d2d8332",
+    "_type": "visualization",
+    "_source": {
+      "title": "F5_NGINX_PROTECT-Top-Source-bar",
+      "visState": "{\"title\":\"F5_NGINX_PROTECT-Top-Source-bar\",\"type\":\"histogram\",\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":false},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Total Violation\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"stacked\",\"data\":{\"label\":\"Total Violation\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Total Violation\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"source_ip.keyword\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\"Attacker SourceIP\"}}]}",
       "uiStateJSON": "{}",
       "description": "",
       "version": 1,
@@ -475,7 +481,91 @@
       {
         "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
         "type": "index-pattern",
-        "id": "c8ccad80-ed59-11e9-be19-3751cce751e2"
+        "id": "9efd77c0-a950-11e9-9a67-834aeb3b3bcc"
+      }
+    ]
+  },
+  {
+    "_id": "18578c20-f963-11e9-b776-f1a09d2d8332",
+    "_type": "visualization",
+    "_source": {
+      "title": "F5_NGINX_PROTECT - APIGW - Total API Call",
+      "visState": "{\"title\":\"F5_NGINX_PROTECT - APIGW - Total API Call\",\"type\":\"metrics\",\"params\":{\"id\":\"61ca57f0-469d-11e7-af02-69e470af7417\",\"type\":\"metric\",\"series\":[{\"id\":\"61ca57f1-469d-11e7-af02-69e470af7417\",\"color\":\"rgba(144,201,227,1)\",\"split_mode\":\"everything\",\"metrics\":[{\"id\":\"61ca57f2-469d-11e7-af02-69e470af7417\",\"type\":\"count\"},{\"id\":\"bdd65820-55db-11e8-a230-6b3654bd4d61\",\"type\":\"cumulative_sum\",\"field\":\"61ca57f2-469d-11e7-af02-69e470af7417\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"bar\",\"line_width\":1,\"point_size\":\"0\",\"fill\":\"0.6\",\"stacked\":\"stacked\",\"split_color_mode\":\"gradient\",\"label\":\"Total API Call\",\"terms_field\":\"event.type\",\"terms_size\":\"25\",\"filter\":\"\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"nginxp-apigw-*\",\"interval\":\">=1m\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"show_grid\":1,\"axis_min\":\"0\",\"background_color_rules\":[{\"id\":\"c5d26960-55db-11e8-a230-6b3654bd4d61\"}],\"axis_scale\":\"normal\",\"default_index_pattern\":\"elastiflow-*\",\"gauge_color_rules\":[{\"id\":\"99ce5620-ecd0-11e9-ba43-7b6e9b7e1a76\"}],\"gauge_width\":10,\"gauge_inner_width\":10,\"gauge_style\":\"half\",\"bar_color_rules\":[{\"id\":\"9b09e360-ecd0-11e9-ba43-7b6e9b7e1a76\"}],\"pivot_id\":null,\"pivot_type\":\"ip\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+      }
+    },
+    "_migrationVersion": {
+      "visualization": "7.0.1"
+    },
+    "_references": []
+  },
+  {
+    "_id": "c824e870-5629-11e8-b711-83a5f93b17f3",
+    "_type": "visualization",
+    "_source": {
+      "title": "F5_NGINX_PROTECT - Flow Diagram",
+      "visState": "{\"title\":\"F5_NGINX_PROTECT - Flow Diagram\",\"type\":\"vega\",\"params\":{\"spec\":\"{\\n  \\\"$schema\\\": \\\"https://vega.github.io/schema/vega/v3.0.json\\\",\\n  \\\"data\\\": [\\n    {\\n      \\\"name\\\": \\\"rawData\\\",\\n      \\\"url\\\": {\\n        \\\"%context%\\\": true,\\n        \\\"%timefield%\\\": \\\"@timestamp\\\",\\n        \\\"index\\\": \\\"asm-index-*\\\",\\n        \\\"body\\\": {\\n          \\\"size\\\": 0,\\n          \\\"aggs\\\": {\\n            \\\"table\\\": {\\n              \\\"composite\\\": {\\n                \\\"size\\\": 1000,\\n                \\\"sources\\\": [\\n                  {\\\"stk1\\\": {\\\"terms\\\": {\\\"field\\\": \\\"uri.keyword\\\"}}},\\n                  {\\\"stk2\\\": {\\\"terms\\\": {\\\"field\\\": \\\"attack_type.keyword\\\"}}}\\n                ]\\n              }\\n            }\\n          }\\n        }\\n      },\\n      \\\"format\\\": {\\\"property\\\": \\\"aggregations.table.buckets\\\"},\\n      \\\"transform\\\": [\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.key.stk1\\\", \\\"as\\\": \\\"stk1\\\"},\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.key.stk2\\\", \\\"as\\\": \\\"stk2\\\"},\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.doc_count\\\", \\\"as\\\": \\\"size\\\"}\\n      ]\\n    },\\n    {\\n      \\\"name\\\": \\\"nodes\\\",\\n      \\\"source\\\": \\\"rawData\\\",\\n      \\\"transform\\\": [\\n        {\\n          \\\"type\\\": \\\"filter\\\",\\n          \\\"expr\\\": \\\"!groupSelector || groupSelector.stk1 == datum.stk1 || groupSelector.stk2 == datum.stk2\\\"\\n        },\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.stk1+datum.stk2\\\", \\\"as\\\": \\\"key\\\"},\\n        {\\\"type\\\": \\\"fold\\\", \\\"fields\\\": [\\\"stk1\\\", \\\"stk2\\\"], \\\"as\\\": [\\\"stack\\\", \\\"grpId\\\"]},\\n        {\\n          \\\"type\\\": \\\"formula\\\",\\n          \\\"expr\\\": \\\"datum.stack == 'stk1' ? datum.stk1+datum.stk2 : datum.stk2+datum.stk1\\\",\\n          \\\"as\\\": \\\"sortField\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"stack\\\",\\n          \\\"groupby\\\": [\\\"stack\\\"],\\n          \\\"sort\\\": {\\\"field\\\": \\\"sortField\\\", \\\"order\\\": \\\"descending\\\"},\\n          \\\"field\\\": \\\"size\\\"\\n        },\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"(datum.y0+datum.y1)/2\\\", \\\"as\\\": \\\"yc\\\"}\\n      ]\\n    },\\n    {\\n      \\\"name\\\": \\\"groups\\\",\\n      \\\"source\\\": \\\"nodes\\\",\\n      \\\"transform\\\": [\\n        {\\n          \\\"type\\\": \\\"aggregate\\\",\\n          \\\"groupby\\\": [\\\"stack\\\", \\\"grpId\\\"],\\n          \\\"fields\\\": [\\\"size\\\"],\\n          \\\"ops\\\": [\\\"sum\\\"],\\n          \\\"as\\\": [\\\"total\\\"]\\n        },\\n        {\\n          \\\"type\\\": \\\"stack\\\",\\n          \\\"groupby\\\": [\\\"stack\\\"],\\n          \\\"sort\\\": {\\\"field\\\": \\\"grpId\\\", \\\"order\\\": \\\"descending\\\"},\\n          \\\"field\\\": \\\"total\\\"\\n        },\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"scale('y', datum.y0)\\\", \\\"as\\\": \\\"scaledY0\\\"},\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"scale('y', datum.y1)\\\", \\\"as\\\": \\\"scaledY1\\\"},\\n        {\\\"type\\\": \\\"formula\\\", \\\"expr\\\": \\\"datum.stack == 'stk1'\\\", \\\"as\\\": \\\"rightLabel\\\"},\\n        {\\n          \\\"type\\\": \\\"formula\\\",\\n          \\\"expr\\\": \\\"datum.total/domain('y')[1]\\\",\\n          \\\"as\\\": \\\"percentage\\\"\\n        }\\n      ]\\n    },\\n    {\\n      \\\"name\\\": \\\"destinationNodes\\\",\\n      \\\"source\\\": \\\"nodes\\\",\\n      \\\"transform\\\": [{\\\"type\\\": \\\"filter\\\", \\\"expr\\\": \\\"datum.stack == 'stk2'\\\"}]\\n    },\\n    {\\n      \\\"name\\\": \\\"edges\\\",\\n      \\\"source\\\": \\\"nodes\\\",\\n      \\\"transform\\\": [\\n        {\\\"type\\\": \\\"filter\\\", \\\"expr\\\": \\\"datum.stack == 'stk1'\\\"},\\n        {\\n          \\\"type\\\": \\\"lookup\\\",\\n          \\\"from\\\": \\\"destinationNodes\\\",\\n          \\\"key\\\": \\\"key\\\",\\n          \\\"fields\\\": [\\\"key\\\"],\\n          \\\"as\\\": [\\\"target\\\"]\\n        },\\n        {\\n          \\\"type\\\": \\\"linkpath\\\",\\n          \\\"orient\\\": \\\"horizontal\\\",\\n          \\\"shape\\\": \\\"diagonal\\\",\\n          \\\"sourceY\\\": {\\\"expr\\\": \\\"scale('y', datum.yc)\\\"},\\n          \\\"sourceX\\\": {\\\"expr\\\": \\\"scale('x', 'stk1') + bandwidth('x')\\\"},\\n          \\\"targetY\\\": {\\\"expr\\\": \\\"scale('y', datum.target.yc)\\\"},\\n          \\\"targetX\\\": {\\\"expr\\\": \\\"scale('x', 'stk2')\\\"}\\n        },\\n        {\\n          \\\"type\\\": \\\"formula\\\",\\n          \\\"expr\\\": \\\"range('y')[0]-scale('y', datum.size)\\\",\\n          \\\"as\\\": \\\"strokeWidth\\\"\\n        },\\n        {\\n          \\\"type\\\": \\\"formula\\\",\\n          \\\"expr\\\": \\\"datum.size/domain('y')[1]\\\",\\n          \\\"as\\\": \\\"percentage\\\"\\n        }\\n      ]\\n    }\\n  ],\\n  \\\"scales\\\": [\\n    {\\n      \\\"name\\\": \\\"x\\\",\\n      \\\"type\\\": \\\"band\\\",\\n      \\\"range\\\": \\\"width\\\",\\n      \\\"domain\\\": [\\\"stk1\\\", \\\"stk2\\\"],\\n      \\\"paddingOuter\\\": 0.01,\\n      \\\"paddingInner\\\": 0.98\\n    },\\n    {\\n      \\\"name\\\": \\\"y\\\",\\n      \\\"type\\\": \\\"linear\\\",\\n      \\\"range\\\": \\\"height\\\",\\n      \\\"domain\\\": {\\\"data\\\": \\\"nodes\\\", \\\"field\\\": \\\"y1\\\"}\\n    },\\n    {\\n      \\\"name\\\": \\\"color\\\",\\n      \\\"type\\\": \\\"ordinal\\\",\\n      \\\"range\\\": \\\"category\\\",\\n      \\\"domain\\\": {\\\"data\\\": \\\"rawData\\\", \\\"fields\\\": [\\\"stk1\\\",\\\"stk2\\\"]}\\n    },\\n    {\\n      \\\"name\\\": \\\"stackNames\\\",\\n      \\\"type\\\": \\\"ordinal\\\",\\n      \\\"range\\\": [\\\"API\\\", \\\"Attacks Vector\\\"],\\n      \\\"domain\\\": [\\\"stk1\\\", \\\"stk2\\\"]\\n    }\\n  ],\\n  \\\"axes\\\": [\\n    {\\n      \\\"orient\\\": \\\"bottom\\\",\\n      \\\"scale\\\": \\\"x\\\",\\n      \\\"encode\\\": {\\n        \\\"labels\\\": {\\n          \\\"update\\\": {\\n            \\\"text\\\": {\\\"scale\\\": \\\"stackNames\\\", \\\"field\\\": \\\"value\\\"},\\n            \\\"fontSize\\\": {\\\"value\\\": 14}\\n          }\\n        }\\n      }\\n    },\\n    {\\n      \\\"orient\\\": \\\"left\\\",\\n      \\\"scale\\\": \\\"y\\\",\\n      \\\"encode\\\": {\\\"labels\\\": {\\\"update\\\": {\\\"fontSize\\\": {\\\"value\\\": 12}}}}\\n    }\\n  ],\\n  \\\"marks\\\": [\\n    {\\n      \\\"type\\\": \\\"path\\\",\\n      \\\"name\\\": \\\"edgeMark\\\",\\n      \\\"from\\\": {\\\"data\\\": \\\"edges\\\"},\\n      \\\"clip\\\": true,\\n      \\\"encode\\\": {\\n        \\\"update\\\": {\\n          \\\"stroke\\\": [\\n            {\\n              \\\"test\\\": \\\"groupSelector && groupSelector.stack=='stk1'\\\",\\n              \\\"scale\\\": \\\"color\\\",\\n              \\\"field\\\": \\\"stk2\\\"\\n            },\\n            {\\\"scale\\\": \\\"color\\\", \\\"field\\\": \\\"stk1\\\"}\\n          ],\\n          \\\"strokeWidth\\\": {\\\"field\\\": \\\"strokeWidth\\\"},\\n          \\\"path\\\": {\\\"field\\\": \\\"path\\\"},\\n          \\\"strokeOpacity\\\": {\\n            \\\"signal\\\": \\\"!groupSelector && (groupHover.stk1 == datum.stk1 || groupHover.stk2 == datum.stk2) ? 0.75 : 0.3\\\"\\n          },\\n          \\\"zindex\\\": {\\n            \\\"signal\\\": \\\"!groupSelector && (groupHover.stk1 == datum.stk1 || groupHover.stk2 == datum.stk2) ? 1 : 0\\\"\\n          },\\n          \\\"tooltip\\\": {\\n            \\\"signal\\\": \\\"datum.stk1 + ' → ' + datum.stk2 + '    ' + format(datum.size, ',.0f') + '   (' + format(datum.percentage, '.1%') + ')'\\\"\\n          }\\n        },\\n        \\\"hover\\\": {\\\"strokeOpacity\\\": {\\\"value\\\": 0.75}}\\n      }\\n    },\\n    {\\n      \\\"type\\\": \\\"rect\\\",\\n      \\\"name\\\": \\\"groupMark\\\",\\n      \\\"from\\\": {\\\"data\\\": \\\"groups\\\"},\\n      \\\"encode\\\": {\\n        \\\"enter\\\": {\\n          \\\"fill\\\": {\\\"scale\\\": \\\"color\\\", \\\"field\\\": \\\"grpId\\\"},\\n          \\\"width\\\": {\\\"scale\\\": \\\"x\\\", \\\"band\\\": 1}\\n        },\\n        \\\"update\\\": {\\n          \\\"x\\\": {\\\"scale\\\": \\\"x\\\", \\\"field\\\": \\\"stack\\\"},\\n          \\\"y\\\": {\\\"field\\\": \\\"scaledY0\\\"},\\n          \\\"y2\\\": {\\\"field\\\": \\\"scaledY1\\\"},\\n          \\\"fillOpacity\\\": {\\\"value\\\": 0.7},\\n          \\\"tooltip\\\": {\\n            \\\"signal\\\": \\\"datum.grpId + '   ' + format(datum.total, ',.0f') + '   (' + format(datum.percentage, '.1%') + ')'\\\"\\n          }\\n        },\\n        \\\"hover\\\": {\\\"fillOpacity\\\": {\\\"value\\\": 1}}\\n      }\\n    },\\n    {\\n      \\\"type\\\": \\\"text\\\",\\n      \\\"from\\\": {\\\"data\\\": \\\"groups\\\"},\\n      \\\"interactive\\\": false,\\n      \\\"encode\\\": {\\n        \\\"update\\\": {\\n          \\\"x\\\": {\\n            \\\"signal\\\": \\\"scale('x', datum.stack) + (datum.rightLabel ? bandwidth('x') + 8 : -8)\\\"\\n          },\\n          \\\"yc\\\": {\\\"signal\\\": \\\"(datum.scaledY0 + datum.scaledY1)/2\\\"},\\n          \\\"align\\\": {\\\"signal\\\": \\\"datum.rightLabel ? 'left' : 'right'\\\"},\\n          \\\"baseline\\\": {\\\"value\\\": \\\"middle\\\"},\\n          \\\"fontWeight\\\": {\\\"value\\\": \\\"bold\\\"},\\n          \\\"fontSize\\\": {\\\"value\\\": 12},\\n          \\\"text\\\": {\\n            \\\"signal\\\": \\\"abs(datum.scaledY0-datum.scaledY1) > 10 ? datum.grpId : ''\\\"\\n          }\\n        }\\n      }\\n    },\\n    {\\n      \\\"type\\\": \\\"group\\\",\\n      \\\"data\\\": [\\n        {\\n          \\\"name\\\": \\\"dataForShowAll\\\",\\n          \\\"values\\\": [{}],\\n          \\\"transform\\\": [{\\\"type\\\": \\\"filter\\\", \\\"expr\\\": \\\"groupSelector\\\"}]\\n        }\\n      ],\\n      \\\"encode\\\": {\\n        \\\"enter\\\": {\\n          \\\"xc\\\": {\\\"signal\\\": \\\"width/2\\\"},\\n          \\\"y\\\": {\\\"value\\\": 30},\\n          \\\"width\\\": {\\\"value\\\": 100},\\n          \\\"height\\\": {\\\"value\\\": 36}\\n        }\\n      },\\n      \\\"marks\\\": [\\n        {\\n          \\\"type\\\": \\\"group\\\",\\n          \\\"name\\\": \\\"groupReset\\\",\\n          \\\"from\\\": {\\\"data\\\": \\\"dataForShowAll\\\"},\\n          \\\"encode\\\": {\\n            \\\"enter\\\": {\\n              \\\"cornerRadius\\\": {\\\"value\\\": 3.5},\\n              \\\"fill\\\": {\\\"value\\\": \\\"#666666\\\"},\\n              \\\"height\\\": {\\\"field\\\": {\\\"group\\\": \\\"height\\\"}},\\n              \\\"width\\\": {\\\"field\\\": {\\\"group\\\": \\\"width\\\"}}\\n            },\\n            \\\"update\\\": {\\\"opacity\\\": {\\\"value\\\": 1}},\\n            \\\"hover\\\": {\\\"fill\\\": {\\\"value\\\": \\\"#444444\\\"}}\\n          },\\n          \\\"marks\\\": [\\n            {\\n              \\\"type\\\": \\\"text\\\",\\n              \\\"interactive\\\": false,\\n              \\\"encode\\\": {\\n                \\\"enter\\\": {\\n                  \\\"xc\\\": {\\\"field\\\": {\\\"group\\\": \\\"width\\\"}, \\\"mult\\\": 0.5},\\n                  \\\"yc\\\": {\\\"field\\\": {\\\"group\\\": \\\"height\\\"}, \\\"mult\\\": 0.5, \\\"offset\\\": 1},\\n                  \\\"align\\\": {\\\"value\\\": \\\"center\\\"},\\n                  \\\"baseline\\\": {\\\"value\\\": \\\"middle\\\"},\\n                  \\\"text\\\": {\\\"value\\\": \\\"Show All\\\"},\\n                  \\\"fontSize\\\": {\\\"value\\\": 14},\\n                  \\\"stroke\\\": {\\\"value\\\": \\\"#ecf0f1\\\"}\\n                }\\n              }\\n            }\\n          ]\\n        }\\n      ]\\n    }\\n  ],\\n  \\\"signals\\\": [\\n    {\\n      \\\"name\\\": \\\"groupHover\\\",\\n      \\\"value\\\": {},\\n      \\\"on\\\": [\\n        {\\n          \\\"events\\\": \\\"@groupMark:mouseover\\\",\\n          \\\"update\\\": \\\"{stk1:datum.stack=='stk1' && datum.grpId, stk2:datum.stack=='stk2' && datum.grpId}\\\"\\n        },\\n        {\\\"events\\\": \\\"mouseout\\\", \\\"update\\\": \\\"{}\\\"}\\n      ]\\n    },\\n    {\\n      \\\"name\\\": \\\"groupSelector\\\",\\n      \\\"value\\\": false,\\n      \\\"on\\\": [\\n        {\\n          \\\"events\\\": \\\"@groupMark:click!\\\",\\n          \\\"update\\\": \\\"{stack:datum.stack, stk1:datum.stack=='stk1' && datum.grpId, stk2:datum.stack=='stk2' && datum.grpId}\\\"\\n        },\\n        {\\n          \\\"events\\\": [\\n            {\\\"type\\\": \\\"click\\\", \\\"markname\\\": \\\"groupReset\\\"},\\n            {\\\"type\\\": \\\"dblclick\\\"}\\n          ],\\n          \\\"update\\\": \\\"false\\\"\\n        }\\n      ]\\n    }\\n  ]\\n}\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
+      }
+    },
+    "_migrationVersion": {
+      "visualization": "7.0.1"
+    },
+    "_references": []
+  },
+  {
+    "_id": "ac069fd0-f961-11e9-b776-f1a09d2d8332",
+    "_type": "visualization",
+    "_source": {
+      "title": "F5_NGINX_PROTECT - Top-SourceIP(chart)",
+      "visState": "{\"title\":\"F5_NGINX_PROTECT - Top-SourceIP(chart)\",\"type\":\"horizontal_bar\",\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":false},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":200},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":75,\"filter\":true,\"truncate\":100},\"title\":{\"text\":\"Total Violation\"}}],\"seriesParams\":[{\"show\":true,\"type\":\"histogram\",\"mode\":\"normal\",\"data\":{\"label\":\"Total Violation\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Total Violation\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"source_ip.keyword\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\"Attacker SourceIP\"}}]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+      }
+    },
+    "_migrationVersion": {
+      "visualization": "7.0.1"
+    },
+    "_references": [
+      {
+        "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+        "type": "index-pattern",
+        "id": "9efd77c0-a950-11e9-9a67-834aeb3b3bcc"
+      }
+    ]
+  },
+  {
+    "_id": "eff02790-f964-11e9-b776-f1a09d2d8332",
+    "_type": "visualization",
+    "_source": {
+      "title": "F5_NGINX_PROTECT - Unique Attacker",
+      "visState": "{\"title\":\"F5_NGINX_PROTECT - Unique Attacker\",\"type\":\"metric\",\"params\":{\"addTooltip\":true,\"addLegend\":false,\"type\":\"metric\",\"metric\":{\"percentageMode\":false,\"useRanges\":false,\"colorSchema\":\"Green to Red\",\"metricColorMode\":\"None\",\"colorsRange\":[{\"from\":0,\"to\":10000}],\"labels\":{\"show\":true},\"invertColors\":false,\"style\":{\"bgFill\":\"#000\",\"bgColor\":false,\"labelColor\":false,\"subText\":\"\",\"fontSize\":60}}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"cardinality\",\"schema\":\"metric\",\"params\":{\"field\":\"source_ip.keyword\",\"customLabel\":\"Unique SourceIP\"}}]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+      }
+    },
+    "_migrationVersion": {
+      "visualization": "7.0.1"
+    },
+    "_references": [
+      {
+        "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+        "type": "index-pattern",
+        "id": "9efd77c0-a950-11e9-9a67-834aeb3b3bcc"
       }
     ]
   },
@@ -483,8 +573,26 @@
     "_id": "1d773d80-55dc-11e8-a695-171fb712da36",
     "_type": "visualization",
     "_source": {
-      "title": "F5_NGINX_APIGW - APIGW - Total API Call",
-      "visState": "{\"title\":\"F5_NGINX_APIGW - APIGW - Total API Call\",\"type\":\"metrics\",\"params\":{\"id\":\"61ca57f0-469d-11e7-af02-69e470af7417\",\"type\":\"metric\",\"series\":[{\"id\":\"61ca57f1-469d-11e7-af02-69e470af7417\",\"color\":\"rgba(144,201,227,1)\",\"split_mode\":\"everything\",\"metrics\":[{\"id\":\"61ca57f2-469d-11e7-af02-69e470af7417\",\"type\":\"count\"},{\"id\":\"bdd65820-55db-11e8-a230-6b3654bd4d61\",\"type\":\"cumulative_sum\",\"field\":\"61ca57f2-469d-11e7-af02-69e470af7417\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"bar\",\"line_width\":1,\"point_size\":\"0\",\"fill\":\"0.6\",\"stacked\":\"stacked\",\"split_color_mode\":\"gradient\",\"label\":\"Total API Call\",\"terms_field\":\"event.type\",\"terms_size\":\"25\",\"filter\":\"\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"nginxp-apigw-*\",\"interval\":\">=1m\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"show_grid\":1,\"axis_min\":\"0\",\"background_color_rules\":[{\"id\":\"c5d26960-55db-11e8-a230-6b3654bd4d61\"}],\"axis_scale\":\"normal\",\"default_index_pattern\":\"elastiflow-*\",\"gauge_color_rules\":[{\"id\":\"99ce5620-ecd0-11e9-ba43-7b6e9b7e1a76\"}],\"gauge_width\":10,\"gauge_inner_width\":10,\"gauge_style\":\"half\",\"bar_color_rules\":[{\"id\":\"9b09e360-ecd0-11e9-ba43-7b6e9b7e1a76\"}],\"pivot_id\":null,\"pivot_type\":\"ip\"},\"aggs\":[]}",
+      "title": "F5_NGINX_PROTECT - PROTECT - Total API Violation",
+      "visState": "{\"title\":\"F5_NGINX_PROTECT - PROTECT - Total API Violation\",\"type\":\"metrics\",\"params\":{\"id\":\"61ca57f0-469d-11e7-af02-69e470af7417\",\"type\":\"metric\",\"series\":[{\"id\":\"61ca57f1-469d-11e7-af02-69e470af7417\",\"color\":\"rgba(144,201,227,1)\",\"split_mode\":\"everything\",\"metrics\":[{\"id\":\"61ca57f2-469d-11e7-af02-69e470af7417\",\"type\":\"count\"},{\"id\":\"bdd65820-55db-11e8-a230-6b3654bd4d61\",\"type\":\"cumulative_sum\",\"field\":\"61ca57f2-469d-11e7-af02-69e470af7417\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"bar\",\"line_width\":1,\"point_size\":\"0\",\"fill\":\"0.6\",\"stacked\":\"stacked\",\"split_color_mode\":\"gradient\",\"label\":\"Total API Violation\",\"terms_field\":\"event.type\",\"terms_size\":\"25\",\"filter\":\"\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"asm-index-*\",\"interval\":\">=1m\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"show_grid\":1,\"axis_min\":\"0\",\"background_color_rules\":[{\"id\":\"c5d26960-55db-11e8-a230-6b3654bd4d61\"}],\"axis_scale\":\"normal\",\"default_index_pattern\":\"elastiflow-*\",\"gauge_color_rules\":[{\"id\":\"99ce5620-ecd0-11e9-ba43-7b6e9b7e1a76\"}],\"gauge_width\":10,\"gauge_inner_width\":10,\"gauge_style\":\"half\",\"bar_color_rules\":[{\"id\":\"9b09e360-ecd0-11e9-ba43-7b6e9b7e1a76\"}],\"pivot_id\":null,\"pivot_type\":\"ip\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+      }
+    },
+    "_migrationVersion": {
+      "visualization": "7.0.1"
+    },
+    "_references": []
+  },
+  {
+    "_id": "c677fb10-eef9-11e9-be19-3751cce751e2",
+    "_type": "visualization",
+    "_source": {
+      "title": "F5_NGINX_PROTECT - WAF - Violation timeline",
+      "visState": "{\"title\":\"F5_NGINX_PROTECT - WAF - Violation timeline\",\"type\":\"metrics\",\"params\":{\"id\":\"61ca57f0-469d-11e7-af02-69e470af7417\",\"type\":\"timeseries\",\"series\":[{\"id\":\"61ca57f1-469d-11e7-af02-69e470af7417\",\"color\":\"#68BC00\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"61ca57f2-469d-11e7-af02-69e470af7417\",\"type\":\"count\"}],\"separate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"terms_field\":\"violations.keyword\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"asm-index-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"axis_scale\":\"normal\",\"show_legend\":1,\"show_grid\":1,\"default_index_pattern\":\"elastiflow-*\",\"legend_position\":\"right\"},\"aggs\":[]}",
       "uiStateJSON": "{}",
       "description": "",
       "version": 1,
