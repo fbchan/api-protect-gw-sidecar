@@ -42,8 +42,13 @@ spec:
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
       - name: httpbin-api-apps
-        image: kennethreitz/httpbin
+        image: simonkowallik/httpbin:unit
         imagePullPolicy: IfNotPresent
+        env:
+        - name: XHTTPBIN_X-F5+NGINX
+          value: "Better together"
+        - name: HTTPBIN_F5+NGINX
+          value: "Better together"
         ports:
         - containerPort: 80
       - name: fluentd
